@@ -1,5 +1,5 @@
 /*
-  Ocean theme — deep blue / teal palette with foam-light surfaces.
+  Ocean theme — sidebar layout with dive-deeper home page.
  */
 
 :root {
@@ -13,31 +13,62 @@
 	--gray-gradient: rgba(var(--gray-light), 60%), #fff;
 	--ocean-surface: #caf0f8;
 	--ocean-deep: #03045e;
+	--sidebar-w: 240px;
 	--box-shadow:
 		0 2px 6px rgba(2, 62, 138, 15%), 0 8px 24px rgba(2, 62, 138, 18%),
 		0 16px 32px rgba(2, 62, 138, 18%);
 }
+html {
+	scroll-behavior: smooth;
+}
 body {
 	font-family: var(--font-atkinson);
 	margin: 0;
-	padding: 0;
+	padding: 0 0 0 var(--sidebar-w);
 	text-align: left;
-	background:
-		linear-gradient(180deg, #ade8f4 0%, #caf0f8 35%, #ffffff 100%) no-repeat;
-	background-size: 100% 720px;
+	background: linear-gradient(180deg, #f4fbfd 0%, #ffffff 600px) no-repeat;
 	background-color: #ffffff;
 	word-wrap: break-word;
 	overflow-wrap: break-word;
 	color: rgb(var(--gray-dark));
 	font-size: 20px;
 	line-height: 1.7;
+	min-height: 100vh;
 }
+
+/* Home page is its own beast: edge-to-edge sections, deep gradient, scroll snap */
+body.home {
+	background: linear-gradient(
+			180deg,
+			#e0f7fb 0%,
+			#caf0f8 12%,
+			#90e0ef 28%,
+			#48cae4 44%,
+			#00b4d8 58%,
+			#0077b6 72%,
+			#023e8a 86%,
+			#03045e 100%
+		)
+		no-repeat;
+	background-size: 100% 100%;
+	scroll-snap-type: y proximity;
+}
+
 main {
 	width: 760px;
 	max-width: calc(100% - 2em);
 	margin: auto;
 	padding: 3em 1em;
 }
+
+/* Home page main is full-width; sections handle their own padding */
+body.home main {
+	width: auto;
+	max-width: none;
+	margin: 0;
+	padding: 0;
+}
+
 h1,
 h2,
 h3,
@@ -116,6 +147,12 @@ hr {
 	border: none;
 	border-top: 1px solid rgb(var(--gray-light));
 }
+
+@media (max-width: 900px) {
+	body {
+		padding-left: 0;
+	}
+}
 @media (max-width: 720px) {
 	body {
 		font-size: 18px;
@@ -137,4 +174,15 @@ hr {
 	clip: rect(1px, 1px, 1px, 1px);
 	clip-path: inset(50%);
 	white-space: nowrap;
+}
+
+/* Reduced motion: kill scroll snap and animations for users who opt out */
+@media (prefers-reduced-motion: reduce) {
+	body.home {
+		scroll-snap-type: none;
+	}
+	* {
+		animation-duration: 0.001ms !important;
+		transition-duration: 0.001ms !important;
+	}
 }

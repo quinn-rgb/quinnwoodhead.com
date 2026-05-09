@@ -1,7 +1,7 @@
 ---
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
-import Header from '../components/Header.astro';
+import Sidebar from '../components/Sidebar.astro';
 import { SITE_TITLE } from '../consts';
 
 const projects = [
@@ -84,7 +84,7 @@ const projects = [
 		<BaseHead title={`Projects — ${SITE_TITLE}`} description="Design and engineering projects by Quinn Woodhead." />
 	</head>
 	<body>
-		<Header />
+		<Sidebar />
 		<main>
 			<h1>Projects</h1>
 			<p class="lead">

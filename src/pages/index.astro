@@ -1,210 +1,68 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Footer from '../components/Footer.astro';
-import Header from '../components/Header.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+// Standalone page — does not use the site's Sidebar/global.css layout.
+// Loads its own design system from /portfolio/.
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+		<title>Quinn Woodhead — Designer · Athlete · Builder</title>
+		<meta
+			name="description"
+			content="Product designer with a passion for athletics and sustainability. Water polo on the USA National Team."
+		/>
+
+		<!-- prevent flash on first paint -->
+		<script is:inline>
+			(function () {
+				try {
+					var s = localStorage.getItem('mv-theme');
+					if (s !== 'light' && s !== 'dark') {
+						s = 'light';
+					}
+					document.documentElement.setAttribute('data-theme', s);
+				} catch (e) {}
+			})();
+		</script>
+
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=JetBrains+Mono:wght@400;500;600&display=swap"
+		/>
+
+		<link rel="stylesheet" href="/portfolio/styles.css" />
 	</head>
 	<body>
-		<Header />
-		<main>
-			<section class="hero">
-				<p class="eyebrow">Designer · Athlete · Builder</p>
-				<h1>Quinn Woodhead</h1>
-				<p class="tagline">
-					Product designer with a passion for athletics and sustainability.
-				</p>
-				<p class="intro">
-					Stanford School of Engineering grad, water polo player on the USA National Team,
-					and a builder of things — from foam rollers to oyster shuckers to bridges.
-					I care about the end-to-end of creation: the interview, the sketch, the prototype,
-					the last visual detail.
-				</p>
-				<div class="hero-actions">
-					<a class="btn primary" href="/projects">See projects</a>
-					<a class="btn ghost" href="/about">About me</a>
-				</div>
-			</section>
+		<div id="root"></div>
 
-			<section class="stats">
-				<div class="stat">
-					<span class="stat-num">17+</span>
-					<span class="stat-label">years of water polo</span>
-				</div>
-				<div class="stat">
-					<span class="stat-num">4×</span>
-					<span class="stat-label">All-American</span>
-				</div>
-				<div class="stat">
-					<span class="stat-num">2</span>
-					<span class="stat-label">pro seasons in Europe</span>
-				</div>
-				<div class="stat">
-					<span class="stat-num">14+</span>
-					<span class="stat-label">design projects</span>
-				</div>
-			</section>
+		<!-- React (pinned) -->
+		<script
+			src="https://unpkg.com/react@18.3.1/umd/react.development.js"
+			integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L"
+			crossorigin="anonymous"
+			is:inline></script>
+		<script
+			src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"
+			integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm"
+			crossorigin="anonymous"
+			is:inline></script>
+		<script
+			src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"
+			integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y"
+			crossorigin="anonymous"
+			is:inline></script>
 
-			<section class="cards">
-				<a class="card" href="/projects">
-					<h3>Projects</h3>
-					<p>Things I've built — products, prototypes, experiments.</p>
-				</a>
-				<a class="card" href="/athletics">
-					<h3>Athletics</h3>
-					<p>Water polo career: Stanford, USA National Team, Europe.</p>
-				</a>
-				<a class="card" href="/art">
-					<h3>Art</h3>
-					<p>3D prints, drawings, ceramics, photography.</p>
-				</a>
-				<a class="card" href="/about">
-					<h3>About</h3>
-					<p>Background, education, and how to reach me.</p>
-				</a>
-			</section>
-		</main>
-		<Footer />
-		<style>
-			.hero {
-				padding: 3em 0 2em 0;
-			}
-			.eyebrow {
-				color: var(--accent);
-				font-size: 0.9em;
-				letter-spacing: 0.18em;
-				text-transform: uppercase;
-				margin: 0 0 0.5em 0;
-				font-weight: 600;
-			}
-			h1 {
-				font-size: 4em;
-				margin-bottom: 0.2em;
-			}
-			.tagline {
-				font-size: 1.4em;
-				color: var(--accent-dark);
-				margin-bottom: 1em;
-				max-width: 640px;
-			}
-			.intro {
-				color: rgb(var(--gray-dark));
-				max-width: 640px;
-				margin-bottom: 1.75em;
-			}
-			.hero-actions {
-				display: flex;
-				gap: 0.75em;
-				flex-wrap: wrap;
-			}
-			.btn {
-				display: inline-block;
-				padding: 0.7em 1.4em;
-				border-radius: 999px;
-				text-decoration: none;
-				font-size: 0.95em;
-				font-weight: 600;
-				transition:
-					transform 0.15s ease,
-					box-shadow 0.15s ease;
-			}
-			.btn.primary {
-				background: var(--accent);
-				color: #fff;
-			}
-			.btn.primary:hover {
-				background: var(--accent-dark);
-				color: #fff;
-				transform: translateY(-2px);
-				box-shadow: 0 6px 18px rgba(2, 62, 138, 0.25);
-			}
-			.btn.ghost {
-				background: transparent;
-				color: var(--accent-dark);
-				border: 1px solid rgba(0, 119, 182, 0.4);
-			}
-			.btn.ghost:hover {
-				border-color: var(--accent);
-				color: var(--accent);
-				transform: translateY(-2px);
-			}
+		<!-- Three.js for fluid hero -->
+		<script src="https://unpkg.com/three@0.160.0/build/three.min.js" is:inline></script>
 
-			.stats {
-				display: grid;
-				grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-				gap: 1em;
-				margin: 3em 0;
-				padding: 1.5em;
-				background: rgba(255, 255, 255, 0.6);
-				border: 1px solid rgba(0, 119, 182, 0.15);
-				border-radius: 14px;
-			}
-			.stat {
-				text-align: center;
-			}
-			.stat-num {
-				display: block;
-				font-size: 2em;
-				font-weight: 700;
-				color: var(--accent-dark);
-				line-height: 1;
-				margin-bottom: 0.3em;
-			}
-			.stat-label {
-				display: block;
-				font-size: 0.85em;
-				color: rgb(var(--gray-dark));
-				line-height: 1.3;
-			}
-
-			.cards {
-				display: grid;
-				grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-				gap: 1.25em;
-				margin-top: 2em;
-			}
-			.card {
-				display: block;
-				padding: 1.5em;
-				background: rgba(255, 255, 255, 0.85);
-				border: 1px solid rgba(0, 119, 182, 0.2);
-				border-radius: 12px;
-				text-decoration: none;
-				color: var(--ocean-deep);
-				transition:
-					transform 0.15s ease,
-					box-shadow 0.15s ease,
-					border-color 0.15s ease;
-			}
-			.card:hover {
-				transform: translateY(-3px);
-				box-shadow: 0 8px 24px rgba(0, 119, 182, 0.18);
-				border-color: var(--accent-light);
-			}
-			.card h3 {
-				margin: 0 0 0.3em 0;
-				color: var(--accent-dark);
-				font-size: 1.4em;
-			}
-			.card p {
-				margin: 0;
-				color: rgb(var(--gray-dark));
-				font-size: 0.95em;
-			}
-
-			@media (max-width: 720px) {
-				h1 {
-					font-size: 2.8em;
-				}
-				.tagline {
-					font-size: 1.15em;
-				}
-			}
-		</style>
+		<!-- App scripts -->
+		<script type="text/babel" src="/portfolio/fluid.jsx" is:inline></script>
+		<script type="text/babel" src="/portfolio/sections.jsx" is:inline></script>
+		<script type="text/babel" src="/portfolio/tweaks-panel.jsx" is:inline></script>
+		<script type="text/babel" src="/portfolio/app.jsx" is:inline></script>
 	</body>
 </html>
