@@ -13,37 +13,78 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 	<body>
 		<Header />
 		<main>
-			<h1>🧑‍🚀 Hello, Astronaut!</h1>
-			<p>
-				Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This template
-				serves as a lightweight, minimally-styled starting point for anyone looking to build a personal
-				website, blog, or portfolio with Astro.
-			</p>
-			<p>
-				This template comes with a few integrations already configured in your
-				<code>astro.config.mjs</code> file. You can customize your setup with
-				<a href="https://astro.build/integrations">Astro Integrations</a> to add tools like Tailwind,
-				React, or Vue to your project.
-			</p>
-			<p>Here are a few ideas on how to get started with the template:</p>
-			<ul>
-				<li>Edit this page in <code>src/pages/index.astro</code></li>
-				<li>Edit the site header items in <code>src/components/Header.astro</code></li>
-				<li>Add your name to the footer in <code>src/components/Footer.astro</code></li>
-				<li>Check out the included blog posts in <code>src/content/blog/</code></li>
-				<li>Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code></li>
-			</ul>
-			<p>
-				Have fun! If you get stuck, remember to
-				<a href="https://docs.astro.build/">read the docs</a>
-				or <a href="https://astro.build/chat">join us on Discord</a> to ask questions.
-			</p>
-			<p>
-				Looking for a blog template with a bit more personality? Check out
-				<a href="https://github.com/Charca/astro-blog-template">astro-blog-template</a>
-				by <a href="https://twitter.com/Charca">Maxi Ferreira</a>.
-			</p>
+			<section class="hero">
+				<h1>Quinn Woodhead</h1>
+				<p class="tagline">A placeholder tagline goes here.</p>
+				<p class="intro">
+					Welcome. This is a work-in-progress personal site. Real content coming soon.
+				</p>
+			</section>
+
+			<section class="cards">
+				<a class="card" href="/projects">
+					<h3>Projects</h3>
+					<p>Things I'm building.</p>
+				</a>
+				<a class="card" href="/blog">
+					<h3>Blog</h3>
+					<p>Notes and writing.</p>
+				</a>
+				<a class="card" href="/about">
+					<h3>About</h3>
+					<p>A bit about me.</p>
+				</a>
+			</section>
 		</main>
 		<Footer />
+		<style>
+			.hero {
+				padding: 2em 0 3em 0;
+				text-align: left;
+			}
+			.tagline {
+				font-size: 1.4em;
+				color: var(--accent);
+				margin-bottom: 0.5em;
+			}
+			.intro {
+				color: rgb(var(--gray-dark));
+				max-width: 600px;
+			}
+			.cards {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+				gap: 1.25em;
+				margin-top: 2em;
+			}
+			.card {
+				display: block;
+				padding: 1.5em;
+				background: rgba(255, 255, 255, 0.85);
+				border: 1px solid rgba(0, 119, 182, 0.2);
+				border-radius: 12px;
+				text-decoration: none;
+				color: var(--ocean-deep);
+				transition:
+					transform 0.15s ease,
+					box-shadow 0.15s ease,
+					border-color 0.15s ease;
+			}
+			.card:hover {
+				transform: translateY(-3px);
+				box-shadow: 0 8px 24px rgba(0, 119, 182, 0.18);
+				border-color: var(--accent-light);
+			}
+			.card h3 {
+				margin: 0 0 0.3em 0;
+				color: var(--accent-dark);
+				font-size: 1.4em;
+			}
+			.card p {
+				margin: 0;
+				color: rgb(var(--gray-dark));
+				font-size: 0.95em;
+			}
+		</style>
 	</body>
 </html>

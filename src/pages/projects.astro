@@ -1,0 +1,62 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { SITE_TITLE } from '../consts';
+
+const projects = [
+	{ title: 'Project One', description: 'Placeholder description for the first project.' },
+	{ title: 'Project Two', description: 'Placeholder description for the second project.' },
+	{ title: 'Project Three', description: 'Placeholder description for the third project.' },
+];
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`Projects — ${SITE_TITLE}`} description="Projects by Quinn Woodhead" />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<h1>Projects</h1>
+			<p>A placeholder list of projects. Real ones coming soon.</p>
+			<ul class="projects">
+				{
+					projects.map((p) => (
+						<li class="project">
+							<h3>{p.title}</h3>
+							<p>{p.description}</p>
+						</li>
+					))
+				}
+			</ul>
+		</main>
+		<Footer />
+		<style>
+			.projects {
+				list-style: none;
+				padding: 0;
+				margin: 2em 0 0 0;
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+				gap: 1.25em;
+			}
+			.project {
+				padding: 1.5em;
+				background: rgba(255, 255, 255, 0.85);
+				border: 1px solid rgba(0, 119, 182, 0.2);
+				border-radius: 12px;
+			}
+			.project h3 {
+				margin: 0 0 0.3em 0;
+				color: var(--accent-dark);
+			}
+			.project p {
+				margin: 0;
+				font-size: 0.95em;
+				color: rgb(var(--gray-dark));
+			}
+		</style>
+	</body>
+</html>
