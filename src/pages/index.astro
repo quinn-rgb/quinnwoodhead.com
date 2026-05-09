@@ -14,43 +14,154 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 		<Header />
 		<main>
 			<section class="hero">
+				<p class="eyebrow">Designer · Athlete · Builder</p>
 				<h1>Quinn Woodhead</h1>
-				<p class="tagline">A placeholder tagline goes here.</p>
-				<p class="intro">
-					Welcome. This is a work-in-progress personal site. Real content coming soon.
+				<p class="tagline">
+					Product designer with a passion for athletics and sustainability.
 				</p>
+				<p class="intro">
+					Stanford School of Engineering grad, water polo player on the USA National Team,
+					and a builder of things — from foam rollers to oyster shuckers to bridges.
+					I care about the end-to-end of creation: the interview, the sketch, the prototype,
+					the last visual detail.
+				</p>
+				<div class="hero-actions">
+					<a class="btn primary" href="/projects">See projects</a>
+					<a class="btn ghost" href="/about">About me</a>
+				</div>
+			</section>
+
+			<section class="stats">
+				<div class="stat">
+					<span class="stat-num">17+</span>
+					<span class="stat-label">years of water polo</span>
+				</div>
+				<div class="stat">
+					<span class="stat-num">4×</span>
+					<span class="stat-label">All-American</span>
+				</div>
+				<div class="stat">
+					<span class="stat-num">2</span>
+					<span class="stat-label">pro seasons in Europe</span>
+				</div>
+				<div class="stat">
+					<span class="stat-num">14+</span>
+					<span class="stat-label">design projects</span>
+				</div>
 			</section>
 
 			<section class="cards">
 				<a class="card" href="/projects">
 					<h3>Projects</h3>
-					<p>Things I'm building.</p>
+					<p>Things I've built — products, prototypes, experiments.</p>
 				</a>
-				<a class="card" href="/blog">
-					<h3>Blog</h3>
-					<p>Notes and writing.</p>
+				<a class="card" href="/athletics">
+					<h3>Athletics</h3>
+					<p>Water polo career: Stanford, USA National Team, Europe.</p>
+				</a>
+				<a class="card" href="/art">
+					<h3>Art</h3>
+					<p>3D prints, drawings, ceramics, photography.</p>
 				</a>
 				<a class="card" href="/about">
 					<h3>About</h3>
-					<p>A bit about me.</p>
+					<p>Background, education, and how to reach me.</p>
 				</a>
 			</section>
 		</main>
 		<Footer />
 		<style>
 			.hero {
-				padding: 2em 0 3em 0;
-				text-align: left;
+				padding: 3em 0 2em 0;
+			}
+			.eyebrow {
+				color: var(--accent);
+				font-size: 0.9em;
+				letter-spacing: 0.18em;
+				text-transform: uppercase;
+				margin: 0 0 0.5em 0;
+				font-weight: 600;
+			}
+			h1 {
+				font-size: 4em;
+				margin-bottom: 0.2em;
 			}
 			.tagline {
 				font-size: 1.4em;
-				color: var(--accent);
-				margin-bottom: 0.5em;
+				color: var(--accent-dark);
+				margin-bottom: 1em;
+				max-width: 640px;
 			}
 			.intro {
 				color: rgb(var(--gray-dark));
-				max-width: 600px;
+				max-width: 640px;
+				margin-bottom: 1.75em;
 			}
+			.hero-actions {
+				display: flex;
+				gap: 0.75em;
+				flex-wrap: wrap;
+			}
+			.btn {
+				display: inline-block;
+				padding: 0.7em 1.4em;
+				border-radius: 999px;
+				text-decoration: none;
+				font-size: 0.95em;
+				font-weight: 600;
+				transition:
+					transform 0.15s ease,
+					box-shadow 0.15s ease;
+			}
+			.btn.primary {
+				background: var(--accent);
+				color: #fff;
+			}
+			.btn.primary:hover {
+				background: var(--accent-dark);
+				color: #fff;
+				transform: translateY(-2px);
+				box-shadow: 0 6px 18px rgba(2, 62, 138, 0.25);
+			}
+			.btn.ghost {
+				background: transparent;
+				color: var(--accent-dark);
+				border: 1px solid rgba(0, 119, 182, 0.4);
+			}
+			.btn.ghost:hover {
+				border-color: var(--accent);
+				color: var(--accent);
+				transform: translateY(-2px);
+			}
+
+			.stats {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+				gap: 1em;
+				margin: 3em 0;
+				padding: 1.5em;
+				background: rgba(255, 255, 255, 0.6);
+				border: 1px solid rgba(0, 119, 182, 0.15);
+				border-radius: 14px;
+			}
+			.stat {
+				text-align: center;
+			}
+			.stat-num {
+				display: block;
+				font-size: 2em;
+				font-weight: 700;
+				color: var(--accent-dark);
+				line-height: 1;
+				margin-bottom: 0.3em;
+			}
+			.stat-label {
+				display: block;
+				font-size: 0.85em;
+				color: rgb(var(--gray-dark));
+				line-height: 1.3;
+			}
+
 			.cards {
 				display: grid;
 				grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -84,6 +195,15 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 				margin: 0;
 				color: rgb(var(--gray-dark));
 				font-size: 0.95em;
+			}
+
+			@media (max-width: 720px) {
+				h1 {
+					font-size: 2.8em;
+				}
+				.tagline {
+					font-size: 1.15em;
+				}
 			}
 		</style>
 	</body>

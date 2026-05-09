@@ -1,0 +1,97 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { SITE_TITLE } from '../consts';
+
+const mediums = [
+	{
+		title: '3D Prints',
+		description:
+			'Functional and decorative pieces — replacement parts, household objects, the occasional sculpture.',
+	},
+	{
+		title: 'Drawings',
+		description:
+			'Sketches and finished pieces — sometimes a way to think, sometimes the end goal.',
+	},
+	{
+		title: 'Ceramics',
+		description: 'Hand-thrown and slab-built work, with a custom maker\'s stamp.',
+	},
+	{
+		title: 'Photography',
+		description: 'Captured in-between moments and places worth remembering.',
+	},
+];
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`Art — ${SITE_TITLE}`} description="Art by Quinn Woodhead — 3D prints, drawings, ceramics, photography." />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<h1>Art</h1>
+			<p class="lead">
+				Making things outside of school and sport. Four mediums I keep coming back to.
+			</p>
+
+			<section class="mediums">
+				{
+					mediums.map((m) => (
+						<article class="medium">
+							<h2>{m.title}</h2>
+							<p>{m.description}</p>
+							<div class="placeholder">Gallery coming soon</div>
+						</article>
+					))
+				}
+			</section>
+		</main>
+		<Footer />
+		<style>
+			.lead {
+				font-size: 1.1em;
+				color: rgb(var(--gray-dark));
+				max-width: 680px;
+				margin-bottom: 2.5em;
+			}
+			.mediums {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+				gap: 1.5em;
+			}
+			.medium {
+				padding: 1.5em;
+				background: rgba(255, 255, 255, 0.85);
+				border: 1px solid rgba(0, 119, 182, 0.2);
+				border-radius: 12px;
+			}
+			.medium h2 {
+				margin: 0 0 0.4em 0;
+				color: var(--accent-dark);
+				font-size: 1.4em;
+			}
+			.medium p {
+				margin: 0 0 1em 0;
+				color: rgb(var(--gray-dark));
+				font-size: 0.95em;
+			}
+			.placeholder {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				height: 140px;
+				background: linear-gradient(135deg, #ade8f4 0%, #caf0f8 100%);
+				border-radius: 8px;
+				color: var(--accent-dark);
+				font-size: 0.85em;
+				font-style: italic;
+				opacity: 0.8;
+			}
+		</style>
+	</body>
+</html>

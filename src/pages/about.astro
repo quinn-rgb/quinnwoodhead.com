@@ -8,14 +8,162 @@ import { SITE_TITLE } from '../consts';
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={`About — ${SITE_TITLE}`} description="About Quinn Woodhead" />
+		<BaseHead title={`About — ${SITE_TITLE}`} description="About Quinn Woodhead — designer, water polo player, builder." />
 	</head>
 	<body>
 		<Header />
 		<main>
 			<h1>About</h1>
-			<p>This is a placeholder About page. Real bio coming soon.</p>
+
+			<section class="bio">
+				<p>
+					I'm Quinn — a product designer, professional water polo player, and lifelong builder.
+					I grew up in California, studied Product Design at Stanford's School of Engineering,
+					and spent the years since splitting my time between competing internationally and
+					designing things I find useful.
+				</p>
+				<p>
+					I'm motivated by hard-working people and challenging environments. I gravitate toward
+					teams that take creativity, sustainability, and collaboration seriously, and I love
+					the full arc of making something — from talking to users and finding the real need,
+					to sketching, to prototyping, to nailing the last visual detail.
+				</p>
+			</section>
+
+			<section class="block">
+				<h2>Education</h2>
+				<ul class="timeline">
+					<li>
+						<span class="year">2022</span>
+						<div>
+							<strong>Stanford University</strong> — B.S. Product Design, School of Engineering
+						</div>
+					</li>
+					<li>
+						<span class="year">2018</span>
+						<div>
+							<strong>Sir Francis Drake High School</strong> — San Anselmo, CA
+						</div>
+					</li>
+				</ul>
+			</section>
+
+			<section class="block">
+				<h2>What I work on</h2>
+				<p>
+					I design products end-to-end — research, ideation, CAD, prototyping, and visual
+					communication. I'm particularly drawn to physical products that solve a small
+					real-world problem cleanly.
+				</p>
+				<div class="skill-grid">
+					<div class="skill-group">
+						<h3>Design</h3>
+						<ul>
+							<li>Need-finding & user research</li>
+							<li>Sketching & ideation</li>
+							<li>Industrial design</li>
+							<li>Visual communication</li>
+						</ul>
+					</div>
+					<div class="skill-group">
+						<h3>Tools</h3>
+						<ul>
+							<li>SolidWorks, Fusion 360</li>
+							<li>Adobe Illustrator</li>
+							<li>Physical prototyping</li>
+							<li>Laser cutting, 3D printing</li>
+						</ul>
+					</div>
+					<div class="skill-group">
+						<h3>How I work</h3>
+						<ul>
+							<li>Leadership & team building</li>
+							<li>Problem solving</li>
+							<li>Product management</li>
+							<li>Cross-functional collaboration</li>
+						</ul>
+					</div>
+				</div>
+			</section>
+
+			<section class="block contact">
+				<h2>Get in touch</h2>
+				<p>The best way to reach me is by email.</p>
+				<a class="email" href="mailto:qwoodhead@gmail.com">qwoodhead@gmail.com</a>
+			</section>
 		</main>
 		<Footer />
+		<style>
+			.bio p {
+				font-size: 1.1em;
+				color: rgb(var(--gray-dark));
+				max-width: 680px;
+			}
+			.block {
+				margin-top: 3em;
+			}
+			.block h2 {
+				color: var(--accent-dark);
+				border-bottom: 2px solid rgba(0, 119, 182, 0.2);
+				padding-bottom: 0.3em;
+				margin-bottom: 0.8em;
+			}
+			.timeline {
+				list-style: none;
+				padding: 0;
+				margin: 0;
+			}
+			.timeline li {
+				display: flex;
+				gap: 1.25em;
+				align-items: baseline;
+				padding: 0.6em 0;
+				border-bottom: 1px solid rgba(0, 119, 182, 0.1);
+			}
+			.timeline li:last-child {
+				border-bottom: none;
+			}
+			.year {
+				color: var(--accent);
+				font-weight: 700;
+				min-width: 4em;
+				font-variant-numeric: tabular-nums;
+			}
+			.skill-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+				gap: 1.5em;
+				margin-top: 1.5em;
+			}
+			.skill-group {
+				padding: 1.25em;
+				background: rgba(255, 255, 255, 0.7);
+				border: 1px solid rgba(0, 119, 182, 0.15);
+				border-radius: 12px;
+			}
+			.skill-group h3 {
+				margin: 0 0 0.5em 0;
+				color: var(--accent-dark);
+				font-size: 1.1em;
+				text-transform: uppercase;
+				letter-spacing: 0.08em;
+			}
+			.skill-group ul {
+				margin: 0;
+				padding-left: 1.2em;
+				font-size: 0.95em;
+				color: rgb(var(--gray-dark));
+			}
+			.skill-group li {
+				margin-bottom: 0.25em;
+			}
+			.contact .email {
+				display: inline-block;
+				margin-top: 0.5em;
+				font-size: 1.2em;
+				font-weight: 600;
+				color: var(--accent);
+			}
+		</style>
 	</body>
 </html>
