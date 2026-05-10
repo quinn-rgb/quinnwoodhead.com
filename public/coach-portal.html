@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Coach · Quinn Woodhead</title>
+<script>
+(function(){
+  try {
+    var s = localStorage.getItem('mv-theme');
+    if (s !== 'light' && s !== 'dark') s = 'light';
+    document.documentElement.setAttribute('data-theme', s);
+  } catch(e){}
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="stylesheet" href="/portfolio/styles.css" />
+<style>
+  .gate-wrap {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    padding: 32px; background: var(--bg);
+  }
+  .gate {
+    width: min(440px, 100%); border: 1px solid var(--line);
+    border-radius: 18px; padding: 36px 32px; background: var(--bg-2);
+  }
+  .gate input {
+    width: 100%; padding: 14px 16px; border-radius: 10px;
+    border: 1px solid var(--line-2); background: var(--bg);
+    font-family: 'JetBrains Mono', monospace; font-size: 14px;
+    color: var(--fg); outline: none; letter-spacing: 0.04em;
+  }
+  .gate input:focus { border-color: var(--accent); }
+  .gate .err {
+    color: var(--accent); font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    letter-spacing: 0.08em; text-transform: uppercase; margin-top: 12px; min-height: 14px;
+  }
+  .portal {
+    min-height: 100vh; padding: 56px 0 80px;
+  }
+  .topbar {
+    display: flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 1px solid var(--line); padding-bottom: 20px; margin-bottom: 56px;
+  }
+  .lesson-card {
+    border: 1px solid var(--line); border-radius: 14px; padding: 24px;
+    background: var(--bg); display: flex; flex-direction: column; gap: 10px;
+    transition: border-color 220ms ease, transform 320ms cubic-bezier(.2,.8,.2,1);
+  }
+  .lesson-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line-2);
+    font-family: 'JetBrains Mono', monospace; font-size: 10.5px;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-2);
+  }
+  .pill.accent { color: var(--accent); border-color: var(--accent); }
+  .resource {
+    display: grid; grid-template-columns: 32px 1fr auto; gap: 16px; align-items: center;
+    padding: 16px 0; border-bottom: 1px solid var(--line);
+  }
+  .resource .ico {
+    width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--line-2);
+    background: var(--bg-2); display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--fg-2);
+  }
+  .play-pool {
+    position: relative; aspect-ratio: 16/9; border-radius: 14px;
+    background:
+      repeating-linear-gradient(0deg,
+        color-mix(in oklab, var(--accent) 14%, var(--bg-2)) 0,
+        color-mix(in oklab, var(--accent) 14%, var(--bg-2)) 1px,
+        var(--bg-2) 1px, var(--bg-2) 14.28%);
+    border: 1px solid var(--line); overflow: hidden; user-select: none;
+  }
+  .play-pool .goal-l, .play-pool .goal-r {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: 6px; height: 28%; background: var(--accent);
+  }
+  .play-pool .goal-l { left: 4px; } .play-pool .goal-r { right: 4px; }
+  .player-chip {
+    position: absolute; width: 36px; height: 36px; border-radius: 50%;
+    background: var(--accent); color: var(--accent-fg);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600;
+    cursor: grab; transform: translate(-50%, -50%);
+    box-shadow: 0 4px 14px color-mix(in oklab, var(--accent) 35%, transparent);
+    border: 2px solid var(--bg);
+  }
+  .player-chip.opp { background: var(--bg); color: var(--fg); border: 2px solid var(--fg); }
+  .player-chip.ball { background: var(--bg); color: var(--accent); border: 2px solid var(--accent); width: 22px; height: 22px; font-size: 11px; }
+  .player-chip:active { cursor: grabbing; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+// NOTE: client-side gate only — replace with real auth in production.
+// Hash check just to keep the password out of plain source.
+const PASS_HASH = "splash26"; // placeholder — swap for SHA digest later
+
+function Gate({ onUnlock }) {
+  const [pw, setPw] = useState('');
+  const [err, setErr] = useState('');
+  const submit = (e) => {
+    e.preventDefault();
+    if (pw === PASS_HASH) {
+      sessionStorage.setItem('mv-coach-unlocked', '1');
+      onUnlock();
+    } else {
+      setErr('Incorrect — try again');
+      setPw('');
+    }
+  };
+  return (
+    <div className="gate-wrap">
+      <form className="gate" onSubmit={submit}>
+        <div className="eyebrow" style={{ marginBottom: 10 }}>↳ Restricted · Coaching</div>
+        <h1 className="display" style={{ fontSize: 36, margin: '0 0 8px', fontWeight: 500 }}>Welcome back, swimmers.</h1>
+        <p className="body-prose" style={{ fontSize: 15, margin: '0 0 24px' }}>
+          Enter the season password I gave you at practice. Lose it? Text me.
+        </p>
+        <input
+          type="password"
+          autoFocus
+          value={pw}
+          onChange={(e) => { setPw(e.target.value); setErr(''); }}
+          placeholder="Season password"
+        />
+        <div className="err">{err || '\u00A0'}</div>
+        <button type="submit" className="btn primary" style={{ width: '100%', justifyContent: 'center', marginTop: 8 }}>
+          Dive in
+          <span className="arrow"></span>
+        </button>
+        <a href="Portfolio.html" className="font-mono" style={{ display: 'block', textAlign: 'center', marginTop: 18, fontSize: 11, letterSpacing: '0.08em', color: 'var(--fg-3)', textTransform: 'uppercase', textDecoration: 'none' }}>
+          ← Back to portfolio
+        </a>
+      </form>
+    </div>
+  );
+}
+
+const LESSONS = [
+  { wk: 'WK 01', title: 'Eggbeater foundations', mins: 35, level: 'All', tag: 'Conditioning' },
+  { wk: 'WK 02', title: 'Wet vs. dry passing',   mins: 40, level: 'Beg', tag: 'Skills' },
+  { wk: 'WK 03', title: 'Reading the centre',    mins: 50, level: 'Int', tag: 'Tactics' },
+  { wk: 'WK 04', title: '6 on 5 — quick set',    mins: 45, level: 'Int', tag: 'Tactics' },
+  { wk: 'WK 05', title: 'Outside shooting form', mins: 30, level: 'All', tag: 'Skills' },
+  { wk: 'WK 06', title: 'Counter-attack lanes',  mins: 40, level: 'Adv', tag: 'Tactics' },
+];
+
+const RESOURCES = [
+  { kind: 'PDF', name: 'Season practice plan — Spring 2026.pdf', size: '420 KB' },
+  { kind: 'PDF', name: 'Dryland warm-up routine.pdf', size: '180 KB' },
+  { kind: 'MP4', name: 'Eggbeater drill — slow motion.mp4', size: '12 MB' },
+  { kind: 'CSV', name: 'Stat sheet template.csv', size: '4 KB' },
+  { kind: 'PDF', name: 'Parent handbook.pdf', size: '320 KB' },
+];
+
+function PlayDesigner() {
+  const poolRef = useRef(null);
+  const [players, setPlayers] = useState([
+    { id: 'p1', x: 22, y: 30, kind: 'us',  label: '1' },
+    { id: 'p2', x: 28, y: 60, kind: 'us',  label: '2' },
+    { id: 'p3', x: 50, y: 50, kind: 'us',  label: '3' },
+    { id: 'p4', x: 70, y: 30, kind: 'us',  label: '4' },
+    { id: 'p5', x: 78, y: 65, kind: 'us',  label: '5' },
+    { id: 'p6', x: 88, y: 50, kind: 'us',  label: 'C' },
+    { id: 'o1', x: 60, y: 20, kind: 'opp', label: '1' },
+    { id: 'o2', x: 60, y: 80, kind: 'opp', label: '2' },
+    { id: 'o3', x: 75, y: 50, kind: 'opp', label: '3' },
+    { id: 'b',  x: 50, y: 50, kind: 'ball', label: '●' },
+  ]);
+  const dragRef = useRef(null);
+
+  const onDown = (id) => (e) => {
+    e.preventDefault();
+    dragRef.current = id;
+  };
+  const onMove = (e) => {
+    if (!dragRef.current) return;
+    const r = poolRef.current.getBoundingClientRect();
+    const x = ((e.clientX - r.left) / r.width) * 100;
+    const y = ((e.clientY - r.top) / r.height) * 100;
+    setPlayers(prev => prev.map(p => p.id === dragRef.current
+      ? { ...p, x: Math.max(2, Math.min(98, x)), y: Math.max(4, Math.min(96, y)) }
+      : p));
+  };
+  const onUp = () => { dragRef.current = null; };
+
+  useEffect(() => {
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+    return () => {
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onUp);
+    };
+  }, []);
+
+  const reset = () => setPlayers([
+    { id: 'p1', x: 22, y: 30, kind: 'us', label: '1' },
+    { id: 'p2', x: 28, y: 60, kind: 'us', label: '2' },
+    { id: 'p3', x: 50, y: 50, kind: 'us', label: '3' },
+    { id: 'p4', x: 70, y: 30, kind: 'us', label: '4' },
+    { id: 'p5', x: 78, y: 65, kind: 'us', label: '5' },
+    { id: 'p6', x: 88, y: 50, kind: 'us', label: 'C' },
+    { id: 'o1', x: 60, y: 20, kind: 'opp', label: '1' },
+    { id: 'o2', x: 60, y: 80, kind: 'opp', label: '2' },
+    { id: 'o3', x: 75, y: 50, kind: 'opp', label: '3' },
+    { id: 'b',  x: 50, y: 50, kind: 'ball', label: '●' },
+  ]);
+
+  return (
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 14 }}>
+        <span className="eyebrow">§ Play designer · drag to position</span>
+        <button onClick={reset} className="pill" style={{ background: 'transparent', cursor: 'pointer' }}>↺ Reset</button>
+      </div>
+      <div ref={poolRef} className="play-pool">
+        <div className="goal-l"></div>
+        <div className="goal-r"></div>
+        {players.map(p => (
+          <div
+            key={p.id}
+            className={`player-chip ${p.kind === 'opp' ? 'opp' : ''} ${p.kind === 'ball' ? 'ball' : ''}`}
+            style={{ left: `${p.x}%`, top: `${p.y}%` }}
+            onMouseDown={onDown(p.id)}
+          >{p.label}</div>
+        ))}
+      </div>
+      <p className="body-prose" style={{ fontSize: 14, marginTop: 14, color: 'var(--fg-2)' }}>
+        Drag any chip to set up a play. Use this to learn 6-on-5 spacing — your default position is your jersey number.
+      </p>
+    </div>
+  );
+}
+
+function Portal({ onLock }) {
+  return (
+    <div className="portal">
+      <div className="container">
+        <div className="topbar">
+          <div>
+            <div className="eyebrow" style={{ marginBottom: 6 }}>↳ Coach portal · Spring 2026</div>
+            <div className="font-serif" style={{ fontSize: 28, fontWeight: 500, letterSpacing: '-0.01em' }}>
+              Welcome back, team.
+            </div>
+          </div>
+          <button onClick={onLock} className="pill" style={{ background: 'transparent', cursor: 'pointer' }}>↩ Sign out</button>
+        </div>
+
+        {/* Hero CTA */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 2fr) minmax(0, 1fr)', gap: 32, marginBottom: 80 }}>
+          <div style={{ border: '1px solid var(--line)', borderRadius: 14, padding: 28, background: 'var(--bg-2)' }}>
+            <span className="pill accent">▶ This week</span>
+            <h2 className="display" style={{ fontSize: 32, fontWeight: 500, margin: '14px 0 10px' }}>
+              Tuesday & Thursday · 5:30 AM · Lane 4
+            </h2>
+            <p className="body-prose" style={{ margin: 0 }}>
+              Focus: <em>counter-attack lanes</em>. Bring fins. Watch the WK 06 video before you arrive — it's three minutes.
+            </p>
+          </div>
+          <div style={{ border: '1px solid var(--line)', borderRadius: 14, padding: 28 }}>
+            <div className="eyebrow" style={{ marginBottom: 12 }}>§ Stats</div>
+            <div style={{ display: 'flex', gap: 28 }}>
+              <div>
+                <div className="font-serif" style={{ fontSize: 38, fontWeight: 500, lineHeight: 1 }}>14</div>
+                <div className="font-mono" style={{ fontSize: 10.5, letterSpacing: '0.08em', color: 'var(--fg-3)', textTransform: 'uppercase', marginTop: 6 }}>Lessons</div>
+              </div>
+              <div>
+                <div className="font-serif" style={{ fontSize: 38, fontWeight: 500, lineHeight: 1 }}>6</div>
+                <div className="font-mono" style={{ fontSize: 10.5, letterSpacing: '0.08em', color: 'var(--fg-3)', textTransform: 'uppercase', marginTop: 6 }}>Active swimmers</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Lessons */}
+        <div className="eyebrow" style={{ marginBottom: 18 }}>§ Lessons · season plan</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 16, marginBottom: 80 }}>
+          {LESSONS.map((l, i) => (
+            <div key={i} className="lesson-card">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                <span className="font-mono" style={{ fontSize: 11, color: 'var(--accent)', letterSpacing: '0.08em' }}>{l.wk}</span>
+                <span className="font-mono" style={{ fontSize: 10.5, color: 'var(--fg-3)', letterSpacing: '0.08em' }}>{l.mins} MIN · {l.level}</span>
+              </div>
+              <div className="font-serif" style={{ fontSize: 19, fontWeight: 500, letterSpacing: '-0.005em', marginTop: 4 }}>
+                {l.title}
+              </div>
+              <span className="pill" style={{ alignSelf: 'flex-start', marginTop: 6 }}>{l.tag}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Interactive play designer */}
+        <div style={{ marginBottom: 80 }}>
+          <PlayDesigner />
+        </div>
+
+        {/* Resources */}
+        <div className="eyebrow" style={{ marginBottom: 18 }}>§ Downloads</div>
+        <div style={{ borderTop: '1px solid var(--line)', marginBottom: 80 }}>
+          {RESOURCES.map((r, i) => (
+            <div key={i} className="resource">
+              <div className="ico">{r.kind}</div>
+              <div className="font-serif" style={{ fontSize: 16 }}>{r.name}</div>
+              <a href="#" className="pill" download>↓ {r.size}</a>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const [unlocked, setUnlocked] = useState(() => sessionStorage.getItem('mv-coach-unlocked') === '1');
+  const lock = () => { sessionStorage.removeItem('mv-coach-unlocked'); setUnlocked(false); };
+  return unlocked ? <Portal onLock={lock} /> : <Gate onUnlock={() => setUnlocked(true)} />;
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

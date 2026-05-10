@@ -370,9 +370,8 @@ const AquaRibbon = React.forwardRef(({ theme }, ref) => {
     };
     const onLeave = () => { mouse.active = false; mouse.x = -9999; mouse.y = -9999; };
     const onClick = (e) => {
-      const r = canvas.getBoundingClientRect();
-      ripples.push({ x: e.clientX - r.left, y: e.clientY - r.top, t: 0, life: 1, amp: 1 });
-      if (ripples.length > 12) ripples.shift();
+      // disabled — buoy clicks already spawn ripples via the imperative handle.
+      // letting random water clicks spawn extra ripples just adds shader work.
     };
     const onTouch = (e) => {
       const tt = e.touches[0]; if (!tt) return;
@@ -399,15 +398,15 @@ const AquaRibbon = React.forwardRef(({ theme }, ref) => {
 
       for (let i = ripples.length - 1; i >= 0; i--) {
         ripples[i].t += 1/60;
-        ripples[i].life = Math.max(0, 1 - ripples[i].t / 2.4);
+        ripples[i].life = Math.max(0, 1 - ripples[i].t / 1.4);
         if (ripples[i].life <= 0) ripples.splice(i, 1);
       }
 
-      const lanes = 38;
+      const lanes = 24;
       for (let i = 0; i < lanes; i++) {
         const y = (h * (i + 0.5)) / lanes;
         ctx.beginPath(); ctx.moveTo(0, y);
-        for (let x = 0; x <= w; x += 6) {
+        for (let x = 0; x <= w; x += 8) {
           let wave = Math.sin((x*0.012) + t*0.7 + i*0.18) * 6
                    + Math.sin((x*0.004) - t*0.5 + i*0.1) * 10;
           if (mouse.active) {

@@ -87,15 +87,18 @@ const HomeSection = ({ theme, variant = 'whisper' }) => {
 
   // ---- Variant: whisper (subtle full-bleed) ----
   if (variant === 'whisper') {
+    const isDark = theme === 'dark';
     return (
       <section id="home" className="hero" data-screen-label="01 Home">
-        <div style={{ position: 'absolute', inset: 0, opacity: 0.55 }}>
-          <FluidHero theme={theme} intensity={0.22} accentBoost={0.18} />
+        <div style={{ position: 'absolute', inset: 0, opacity: isDark ? 0.9 : 0.55 }}>
+          <FluidHero theme={theme} intensity={isDark ? 0.5 : 0.22} accentBoost={isDark ? 0.45 : 0.18} />
         </div>
-        {/* heavier veil — push toward bg so type sits cleanly */}
+        {/* veil — keeps type readable, lighter in dark mode so water shows through */}
         <div style={{
           position:'absolute', inset: 0, zIndex: 1, pointerEvents:'none',
-          background: 'linear-gradient(180deg, color-mix(in oklab, var(--bg) 80%, transparent) 0%, color-mix(in oklab, var(--bg) 55%, transparent) 30%, color-mix(in oklab, var(--bg) 30%, transparent) 70%, color-mix(in oklab, var(--bg) 60%, transparent) 100%)'
+          background: isDark
+            ? 'linear-gradient(180deg, color-mix(in oklab, var(--bg) 55%, transparent) 0%, color-mix(in oklab, var(--bg) 25%, transparent) 30%, color-mix(in oklab, var(--bg) 8%, transparent) 70%, color-mix(in oklab, var(--bg) 30%, transparent) 100%)'
+            : 'linear-gradient(180deg, color-mix(in oklab, var(--bg) 80%, transparent) 0%, color-mix(in oklab, var(--bg) 55%, transparent) 30%, color-mix(in oklab, var(--bg) 30%, transparent) 70%, color-mix(in oklab, var(--bg) 60%, transparent) 100%)'
         }} />
         <div className="hero-overlay">
           <div className="container">{heroIntro}</div>
@@ -478,12 +481,18 @@ const AthleticsSection = ({ theme }) => {
   const [seenIds, setSeenIds] = useState(() => new Set());
 
   const handleBuoy = (m) => {
-    const wrap = ribbonWrapRef.current;
-    if (wrap && ribbonRef.current?.spawnRipple) {
-      ribbonRef.current.spawnRipple(m.x * wrap.clientWidth, m.y * wrap.clientHeight, { amp: 1.6 });
-    }
     setActiveId(m.id);
-    setSeenIds(prev => { const s = new Set(prev); s.add(m.id); return s; });
+    setSeenIds(prev => {
+      if (prev.has(m.id)) return prev;
+      const s = new Set(prev); s.add(m.id); return s;
+    });
+    // spawn a small, cheap ripple after state commits so the click feels instant
+    requestAnimationFrame(() => {
+      const wrap = ribbonWrapRef.current;
+      if (wrap && ribbonRef.current?.spawnRipple) {
+        ribbonRef.current.spawnRipple(m.x * wrap.clientWidth, m.y * wrap.clientHeight, { amp: 0.6 });
+      }
+    });
   };
 
   const active = ATHLETIC_MILESTONES.find(m => m.id === activeId);
@@ -620,6 +629,17 @@ const AthleticsSection = ({ theme }) => {
                     className="interactive"
                     style={{
                       pointerEvents: 'auto',
+                      width: 32, height: 32,
+                      background: 'transparent',
+                      border: 'none',
+                      padding: 0,
+                      cursor: 'pointer',
+                      position: 'relative',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    }}
+                    aria-label={`${m.year} — ${m.title}`}
+                  >
+                    <span style={{
                       width: isActive ? 18 : 14, height: isActive ? 18 : 14,
                       borderRadius: '50%',
                       background: isActive
@@ -629,11 +649,10 @@ const AthleticsSection = ({ theme }) => {
                       boxShadow: isActive
                         ? '0 0 0 6px color-mix(in oklab, var(--accent-2) 22%, transparent)'
                         : '0 0 0 0 color-mix(in oklab, var(--accent-2) 0%, transparent)',
-                      padding: 0, cursor: 'pointer',
-                      transition: 'all 280ms cubic-bezier(.2,.8,.2,1)',
-                    }}
-                    aria-label={`${m.year} — ${m.title}`}
-                  />
+                      transition: 'background 180ms ease, width 180ms ease, height 180ms ease, box-shadow 220ms ease',
+                      pointerEvents: 'none',
+                    }} />
+                  </button>
                   <span className="font-mono" style={{
                     fontSize: 10,
                     letterSpacing: '0.08em',
@@ -909,7 +928,7 @@ const Footer = () => {
             { l: 'LinkedIn',  v: '↗ linkedin',  href: 'https://www.linkedin.com/in/quinn-woodhead-b6558817a/', external: true },
             { l: 'Email',     v: '↗ qwoodhead@…', href: 'mailto:qwoodhead@gmail.com' },
             { l: 'Résumé',    v: '↓ résumé.pdf' },
-            { l: 'Coach',     v: '→ coach portal', href: '#' },
+            { l: 'Coach',     v: '→ coach portal', href: '/coach-portal.html', external: true },
           ].map((s, i) => (
             <a
               key={i}

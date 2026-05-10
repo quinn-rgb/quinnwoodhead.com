@@ -315,7 +315,7 @@ const App = () => {
         <a href="[RESUME PDF URL]" download target="_blank" rel="noopener noreferrer" className="interactive" data-cursor-label="Résumé PDF">
           <span className="arrow">↓ </span>Résumé
         </a>
-        <a href="Coach Portal.html" target="_blank" rel="noopener noreferrer" className="interactive" data-cursor-label="For my swimmers">
+        <a href="/coach-portal.html" target="_blank" rel="noopener noreferrer" className="interactive" data-cursor-label="For my swimmers">
           <span className="arrow">→ </span>Coach&nbsp;Portal
         </a>
       </aside>
