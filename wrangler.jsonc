@@ -1,9 +1,14 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "quinnwoodhead",
+	"main": "worker/index.js",
 	"compatibility_date": "2025-04-01",
 	"assets": {
 		"directory": "./dist",
-		"not_found_handling": "404-page"
+		"binding": "ASSETS",
+		"not_found_handling": "404-page",
+		// The gate has to run before static files are served, or the Worker
+		// would never see requests for pages that exist on disk.
+		"run_worker_first": true
 	}
 }

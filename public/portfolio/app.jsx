@@ -312,9 +312,8 @@ const App = () => {
         <a href="https://www.linkedin.com/in/quinn-woodhead-b6558817a/" target="_blank" rel="noopener noreferrer" className="interactive" data-cursor-label="LinkedIn">
           <span className="arrow">↗ </span>LinkedIn
         </a>
-        <a href="[RESUME PDF URL]" download target="_blank" rel="noopener noreferrer" className="interactive" data-cursor-label="Résumé PDF">
-          <span className="arrow">↓ </span>Résumé
-        </a>
+        {/* Résumé link removed — it pointed at the literal string "[RESUME PDF URL]".
+            To restore: drop the PDF in public/ and set href="/your-resume.pdf". */}
         <a href="/coach-portal.html" target="_blank" rel="noopener noreferrer" className="interactive" data-cursor-label="For my swimmers">
           <span className="arrow">→ </span>Coach&nbsp;Portal
         </a>

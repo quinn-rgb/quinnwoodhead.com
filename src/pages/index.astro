@@ -1,70 +1,553 @@
 ---
-// Standalone page — does not use the site's Sidebar/global.css layout.
-// Loads its own design system from /portfolio/.
+// The door. Public, static, self-contained — no React, no Babel, no Three.js.
+// The fluid is the same shader that used to sit behind the old homepage,
+// ported to raw WebGL and promoted to being the whole page.
+const LINKEDIN = 'https://www.linkedin.com/in/quinn-woodhead-b6558817a/';
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-		<title>Quinn Woodhead — Designer · Athlete · Builder</title>
-		<meta
-			name="description"
-			content="Product designer with a passion for athletics and sustainability. Water polo on the USA National Team."
-		/>
-
-		<!-- prevent flash on first paint -->
-		<script is:inline>
-			(function () {
-				try {
-					var s = localStorage.getItem('mv-theme');
-					if (s !== 'light' && s !== 'dark') {
-						s = 'light';
-					}
-					document.documentElement.setAttribute('data-theme', s);
-				} catch (e) {}
-			})();
-		</script>
-
+		<title>Quinn Woodhead</title>
+		<meta name="description" content="Quinn Woodhead." />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="theme-color" content="#070b16" />
 
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
 			rel="stylesheet"
-			href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=JetBrains+Mono:wght@400;500;600&display=swap"
+			href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap"
 		/>
 
-		<link rel="stylesheet" href="/portfolio/styles.css" />
+		<style>
+			:root {
+				--bg: #070b16;
+				--fg: #eef2f8;
+				--fg-2: #9fb0cc;
+				--fg-3: #5d6d8a;
+				--accent: #6da3ff;
+				--line: rgba(255, 255, 255, 0.16);
+				--serif: 'Lora', Georgia, 'Times New Roman', serif;
+				--mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+			}
+
+			* { box-sizing: border-box; }
+
+			html, body {
+				height: 100%;
+				margin: 0;
+				background: var(--bg);
+				color: var(--fg);
+				font-family: var(--serif);
+				overflow: hidden;
+			}
+
+			/* Fallback that shows if WebGL is unavailable — never a blank page. */
+			body::before {
+				content: '';
+				position: fixed;
+				inset: 0;
+				background:
+					radial-gradient(130% 100% at 50% 100%, #1f3a6d 0%, #14213d 42%, var(--bg) 78%);
+				z-index: 0;
+			}
+
+			#fluid {
+				position: fixed;
+				inset: 0;
+				width: 100%;
+				height: 100%;
+				display: block;
+				z-index: 1;
+				opacity: 0;
+				transition: opacity 900ms ease;
+			}
+			#fluid.lit { opacity: 1; }
+
+			.stage {
+				position: relative;
+				z-index: 2;
+				min-height: 100%;
+				min-height: 100svh;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				padding: 32px;
+				text-align: center;
+				transition: opacity 520ms ease, transform 520ms ease;
+			}
+			.stage.parting {
+				opacity: 0;
+				transform: scale(1.04);
+			}
+
+			h1 {
+				font-family: var(--serif);
+				font-weight: 400;
+				font-size: clamp(42px, 8.2vw, 104px);
+				line-height: 1;
+				letter-spacing: -0.02em;
+				margin: 0;
+				text-shadow: 0 2px 40px rgba(7, 11, 22, 0.55);
+			}
+			h1 .dot { color: var(--accent); }
+
+			.line {
+				font-family: var(--serif);
+				font-style: italic;
+				font-size: clamp(15px, 2.1vw, 20px);
+				color: var(--fg-2);
+				margin: 18px 0 0;
+				text-shadow: 0 1px 24px rgba(7, 11, 22, 0.6);
+			}
+
+			form {
+				margin: 52px 0 0;
+				display: flex;
+				align-items: center;
+				gap: 10px;
+				border-bottom: 1px solid var(--line);
+				padding: 0 2px 10px;
+				width: min(300px, 78vw);
+				transition: border-color 220ms ease;
+			}
+			form:focus-within { border-bottom-color: var(--accent); }
+			form.wrong { animation: shake 420ms cubic-bezier(.36,.07,.19,.97); }
+
+			@keyframes shake {
+				10%, 90% { transform: translateX(-2px); }
+				20%, 80% { transform: translateX(4px); }
+				30%, 50%, 70% { transform: translateX(-7px); }
+				40%, 60% { transform: translateX(7px); }
+			}
+
+			input {
+				flex: 1;
+				background: none;
+				border: 0;
+				outline: 0;
+				color: var(--fg);
+				font-family: var(--mono);
+				font-size: 13px;
+				letter-spacing: 0.18em;
+				padding: 4px 0;
+			}
+			input::placeholder {
+				color: var(--fg-3);
+				letter-spacing: 0.18em;
+			}
+
+			button {
+				background: none;
+				border: 0;
+				cursor: pointer;
+				color: var(--fg-3);
+				font-family: var(--mono);
+				font-size: 15px;
+				line-height: 1;
+				padding: 4px 2px;
+				transition: color 200ms ease, transform 200ms ease;
+			}
+			button:hover, form:focus-within button { color: var(--accent); transform: translateX(2px); }
+
+			.err {
+				font-family: var(--mono);
+				font-size: 10px;
+				letter-spacing: 0.14em;
+				text-transform: uppercase;
+				color: var(--accent);
+				margin: 14px 0 0;
+				min-height: 13px;
+				opacity: 0;
+				transition: opacity 200ms ease;
+			}
+			.err.show { opacity: 1; }
+
+			.whisper {
+				position: fixed;
+				left: 50%;
+				bottom: 28px;
+				transform: translateX(-50%);
+				z-index: 3;
+				font-family: var(--mono);
+				font-size: 10px;
+				letter-spacing: 0.16em;
+				text-transform: uppercase;
+				color: var(--fg-2);
+				text-decoration: none;
+				text-shadow: 0 1px 12px rgba(7, 11, 22, 0.9);
+				transition: color 220ms ease, opacity 520ms ease;
+			}
+			.whisper:hover { color: var(--fg-2); }
+			.stage.parting ~ .whisper { opacity: 0; }
+
+			@media (prefers-reduced-motion: reduce) {
+				#fluid, .stage, .whisper { transition: none; }
+				form.wrong { animation: none; }
+			}
+		</style>
 	</head>
+
 	<body>
-		<div id="root"></div>
+		<canvas id="fluid" aria-hidden="true"></canvas>
 
-		<!-- React (pinned) -->
-		<script
-			src="https://unpkg.com/react@18.3.1/umd/react.development.js"
-			integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L"
-			crossorigin="anonymous"
-			is:inline></script>
-		<script
-			src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"
-			integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm"
-			crossorigin="anonymous"
-			is:inline></script>
-		<script
-			src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"
-			integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y"
-			crossorigin="anonymous"
-			is:inline></script>
+		<main class="stage" id="stage">
+			<h1>Quinn Woodhead<span class="dot">.</span></h1>
+			<p class="line">Most of it&rsquo;s under the surface.</p>
 
-		<!-- Three.js for fluid hero -->
-		<script src="https://unpkg.com/three@0.160.0/build/three.min.js" is:inline></script>
+			<form id="gate" autocomplete="on">
+				<label for="pw" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">Password</label>
+				<input
+					id="pw"
+					name="password"
+					type="password"
+					placeholder="Password"
+					autocomplete="current-password"
+					spellcheck="false"
+					autofocus
+				/>
+				<button type="submit" aria-label="Enter">&rarr;</button>
+			</form>
+			<p class="err" id="err" role="status" aria-live="polite"></p>
+		</main>
 
-		<!-- App scripts -->
-		<script type="text/babel" src="/portfolio/fluid.jsx" is:inline></script>
-		<script type="text/babel" src="/portfolio/sections.jsx" is:inline></script>
-		<script type="text/babel" src="/portfolio/tweaks-panel.jsx" is:inline></script>
-		<script type="text/babel" src="/portfolio/app.jsx" is:inline></script>
+		<a class="whisper" href={LINKEDIN} target="_blank" rel="noopener noreferrer">LinkedIn &#8599;</a>
+
+		<script is:inline>
+			(function () {
+				var canvas = document.getElementById('fluid');
+				var stage = document.getElementById('stage');
+				var form = document.getElementById('gate');
+				var input = document.getElementById('pw');
+				var err = document.getElementById('err');
+
+				// ── shader ────────────────────────────────────────────────
+				var VERT = [
+					'attribute vec2 a_pos;',
+					'varying vec2 vUv;',
+					'void main() {',
+					'  vUv = a_pos * 0.5 + 0.5;',
+					'  gl_Position = vec4(a_pos, 0.0, 1.0);',
+					'}'
+				].join('\n');
+
+				var FRAG = [
+					'precision highp float;',
+					'varying vec2 vUv;',
+					'uniform float u_time;',
+					'uniform vec2  u_res;',
+					'uniform vec2  u_mouse;',
+					'uniform vec4  u_ripples[6];',
+					'uniform float u_part;',
+					'uniform float u_chop;',
+					'',
+					'vec3 mod289(vec3 x){ return x - floor(x * (1.0/289.0)) * 289.0; }',
+					'vec2 mod289(vec2 x){ return x - floor(x * (1.0/289.0)) * 289.0; }',
+					'vec3 permute(vec3 x){ return mod289(((x*34.0)+1.0)*x); }',
+					'float snoise(vec2 v) {',
+					'  const vec4 C = vec4(0.211324865405187, 0.366025403784439,',
+					'                     -0.577350269189626, 0.024390243902439);',
+					'  vec2 i  = floor(v + dot(v, C.yy));',
+					'  vec2 x0 = v - i + dot(i, C.xx);',
+					'  vec2 i1; i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);',
+					'  vec4 x12 = x0.xyxy + C.xxzz; x12.xy -= i1;',
+					'  i = mod289(i);',
+					'  vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0))',
+					'                          + i.x + vec3(0.0, i1.x, 1.0));',
+					'  vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);',
+					'  m = m*m; m = m*m;',
+					'  vec3 x = 2.0 * fract(p * C.www) - 1.0;',
+					'  vec3 h = abs(x) - 0.5;',
+					'  vec3 ox = floor(x + 0.5);',
+					'  vec3 a0 = x - ox;',
+					'  m *= 1.79284291400159 - 0.85373472095314 * (a0*a0 + h*h);',
+					'  vec3 g;',
+					'  g.x  = a0.x  * x0.x  + h.x  * x0.y;',
+					'  g.yz = a0.yz * x12.xz + h.yz * x12.yw;',
+					'  return 130.0 * dot(m, g);',
+					'}',
+					'',
+					'float fbm(vec2 p) {',
+					'  float v = 0.0;',
+					'  float a = 0.5;',
+					'  for(int i=0;i<5;i++) {',
+					'    v += a * snoise(p);',
+					'    p *= 2.02;',
+					'    a *= 0.5;',
+					'  }',
+					'  return v;',
+					'}',
+					'',
+					'void main() {',
+					'  vec2 uv = vUv;',
+					'  float aspect = u_res.x / u_res.y;',
+					'',
+					'  // parting — the surface slides away from a centre seam,',
+					'  // with the seam itself wavering the way a real surface would',
+					'  float wobble = snoise(vec2(uv.y * 3.2, u_time * 0.55)) * 0.030 * u_part;',
+					'  float sd  = uv.x - 0.5 + wobble;',
+					'  float gap = u_part * 0.62;',
+					'  vec2  uvp = uv;',
+					'  float opening = 0.0;',
+					'  if (gap > 0.0001) {',
+					'    uvp.x = uv.x - sign(sd) * gap;',
+					'    opening = 1.0 - smoothstep(gap * 0.55, gap, abs(sd));',
+					'  }',
+					'',
+					'  vec2 p = uvp;',
+					'  p.x *= aspect;',
+					'  float t = u_time * 0.10;',
+					'',
+					'  vec2 q;',
+					'  q.x = fbm(p * 1.6 + vec2(0.0, t));',
+					'  q.y = fbm(p * 1.6 + vec2(5.2, t * 1.2));',
+					'',
+					'  vec2 r;',
+					'  r.x = fbm(p * 2.4 + 1.7 * q + vec2(1.7, 9.2) + t * 0.4);',
+					'  r.y = fbm(p * 2.4 + 1.7 * q + vec2(8.3, 2.8) + t * 0.3);',
+					'',
+					'  float f = fbm(p * 1.4 + r);',
+					'',
+					'  // wrong password — the surface turns choppy',
+					'  if (u_chop > 0.001) {',
+					'    f += u_chop * snoise(p * 16.0 + vec2(u_time * 7.0)) * 0.30;',
+					'  }',
+					'',
+					'  vec2 m = u_mouse;',
+					'  m.x *= aspect;',
+					'  float md = distance(p, m);',
+					'  float mInf = exp(-md * 2.8) * 0.32;',
+					'  f += mInf * sin(u_time * 1.2 - md * 7.5) * 0.22;',
+					'',
+					'  for (int i=0; i<6; i++) {',
+					'    vec4 rp = u_ripples[i];',
+					'    if (rp.w <= 0.0) continue;',
+					'    vec2 rc = vec2(rp.x * aspect, rp.y);',
+					'    float rd = distance(p, rc);',
+					'    float age = u_time - rp.z;',
+					'    float radius = age * 0.42;',
+					'    float band = exp(-pow((rd - radius) * 14.0, 2.0));',
+					'    float life = clamp(1.0 - age / 2.4, 0.0, 1.0);',
+					'    f += band * life * rp.w * 0.55;',
+					'  }',
+					'',
+					'  float caustic = abs(sin(f * 4.6 + u_time * 0.55));',
+					'  caustic = pow(caustic, 16.0);',
+					'',
+					'  vec3 cA = vec3(0.047, 0.067, 0.141);',
+					'  vec3 cB = vec3(0.078, 0.129, 0.239);',
+					'  vec3 cC = vec3(0.122, 0.227, 0.427);',
+					'  vec3 accent = vec3(0.427, 0.639, 1.0);',
+					'',
+					'  float g = smoothstep(-0.2, 0.6, f);',
+					'  vec3 col = mix(cA, cB, g);',
+					'  col = mix(col, cC, smoothstep(0.35, 0.95, g + length(r) * 0.18));',
+					'',
+					'  vec3 highlight = mix(vec3(1.0, 0.96, 0.88), accent, 0.20);',
+					'  col += caustic * highlight * 0.10;',
+					'  col += accent * mInf * 0.03;',
+					'',
+					'  // edge falloff',
+					'  float vig = 1.0 - smoothstep(0.45, 1.30, length((uv - 0.5) * vec2(aspect, 1.0)));',
+					'  col *= mix(0.70, 1.04, vig);',
+					'',
+					'  // a still pool in the middle, so the type always has somewhere to sit',
+					'  float calm = 1.0 - smoothstep(0.04, 0.60, length((uv - 0.5) * vec2(aspect * 0.80, 1.0)));',
+					'  col = mix(col, vec3(0.027, 0.043, 0.086), calm * 0.88);',
+					'',
+					'  float grain = (fract(sin(dot(uv.xy + u_time * 0.001, vec2(12.9898,78.233))) * 43758.5453) - 0.5);',
+					'  col += grain * 0.012;',
+					'',
+					'  // light through the opening',
+					'  vec3 glow = mix(accent, vec3(1.0), 0.72);',
+					'  col = mix(col, glow, clamp(opening, 0.0, 1.0));',
+					'  col = mix(col, glow, smoothstep(0.76, 1.0, u_part));',
+					'',
+					'  gl_FragColor = vec4(col, 1.0);',
+					'}'
+				].join('\n');
+
+				var gl = null;
+				try {
+					gl = canvas.getContext('webgl', { antialias: true, alpha: false, powerPreference: 'high-performance' })
+						|| canvas.getContext('experimental-webgl');
+				} catch (e) { gl = null; }
+
+				var U = {};
+				var ripples = [];
+				var mouse = { x: 0.5, y: 0.5, lx: 0.5, ly: 0.5 };
+				var part = 0, partTarget = 0, chop = 0;
+				var start = performance.now();
+				var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+				function compile(type, src) {
+					var s = gl.createShader(type);
+					gl.shaderSource(s, src);
+					gl.compileShader(s);
+					if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+						console.warn(gl.getShaderInfoLog(s));
+						return null;
+					}
+					return s;
+				}
+
+				function resize() {
+					var dpr = Math.min(window.devicePixelRatio || 1,
+						window.matchMedia('(max-width: 768px)').matches ? 1.25 : 2);
+					var w = Math.floor(window.innerWidth * dpr);
+					var h = Math.floor(window.innerHeight * dpr);
+					if (canvas.width !== w || canvas.height !== h) {
+						canvas.width = w; canvas.height = h;
+						gl.viewport(0, 0, w, h);
+					}
+					gl.uniform2f(U.u_res, w, h);
+				}
+
+				function boot() {
+					if (!gl) return;
+					var vs = compile(gl.VERTEX_SHADER, VERT);
+					var fs = compile(gl.FRAGMENT_SHADER, FRAG);
+					if (!vs || !fs) return;
+
+					var prog = gl.createProgram();
+					gl.attachShader(prog, vs);
+					gl.attachShader(prog, fs);
+					gl.linkProgram(prog);
+					if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+						console.warn(gl.getProgramInfoLog(prog));
+						return;
+					}
+					gl.useProgram(prog);
+
+					var buf = gl.createBuffer();
+					gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 3,-1, -1,3]), gl.STATIC_DRAW);
+					var loc = gl.getAttribLocation(prog, 'a_pos');
+					gl.enableVertexAttribArray(loc);
+					gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+
+					['u_time','u_res','u_mouse','u_part','u_chop'].forEach(function (n) {
+						U[n] = gl.getUniformLocation(prog, n);
+					});
+					U.u_ripples = [];
+					for (var i = 0; i < 6; i++) {
+						U.u_ripples.push(gl.getUniformLocation(prog, 'u_ripples[' + i + ']'));
+					}
+
+					resize();
+					window.addEventListener('resize', resize);
+					canvas.classList.add('lit');
+
+					if (reduced) { draw(6.0); return; }
+					requestAnimationFrame(loop);
+				}
+
+				function draw(elapsed) {
+					gl.uniform1f(U.u_time, elapsed);
+					gl.uniform2f(U.u_mouse, mouse.lx, mouse.ly);
+					gl.uniform1f(U.u_part, part);
+					gl.uniform1f(U.u_chop, chop);
+					for (var i = 0; i < 6; i++) {
+						var rp = ripples[i];
+						if (rp) gl.uniform4f(U.u_ripples[i], rp.x, rp.y, rp.t, rp.amp);
+						else gl.uniform4f(U.u_ripples[i], 0, 0, 0, 0);
+					}
+					gl.drawArrays(gl.TRIANGLES, 0, 3);
+				}
+
+				function loop() {
+					var elapsed = (performance.now() - start) / 1000;
+
+					mouse.lx += (mouse.x - mouse.lx) * 0.06;
+					mouse.ly += (mouse.y - mouse.ly) * 0.06;
+
+					part += (partTarget - part) * 0.055;
+					chop *= 0.94;
+
+					ripples = ripples.filter(function (r) { return (elapsed - r.t) < 2.5; });
+
+					draw(elapsed);
+					requestAnimationFrame(loop);
+				}
+
+				function rippleAt(cx, cy) {
+					var elapsed = (performance.now() - start) / 1000;
+					ripples.push({ x: cx, y: cy, t: elapsed, amp: 1.0 });
+					if (ripples.length > 6) ripples.shift();
+				}
+
+				window.addEventListener('mousemove', function (e) {
+					mouse.x = e.clientX / window.innerWidth;
+					mouse.y = 1.0 - e.clientY / window.innerHeight;
+				});
+				window.addEventListener('touchmove', function (e) {
+					var t = e.touches[0];
+					if (!t) return;
+					mouse.x = t.clientX / window.innerWidth;
+					mouse.y = 1.0 - t.clientY / window.innerHeight;
+				}, { passive: true });
+				window.addEventListener('pointerdown', function (e) {
+					rippleAt(e.clientX / window.innerWidth, 1.0 - e.clientY / window.innerHeight);
+				});
+
+				boot();
+
+				// ── the door ──────────────────────────────────────────────
+				var busy = false;
+
+				form.addEventListener('submit', function (e) {
+					e.preventDefault();
+					if (busy) return;
+					var value = input.value;
+					if (!value) { input.focus(); return; }
+					busy = true;
+					err.classList.remove('show');
+
+					fetch('/__auth', {
+						method: 'POST',
+						headers: { 'content-type': 'application/json' },
+						body: JSON.stringify({ password: value })
+					})
+						.then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
+						.then(function (data) {
+							if (data && data.ok) {
+								part_open(data.next || '/home');
+							} else {
+								reject(data && data.error);
+							}
+						})
+						.catch(function () { reject('Network error'); });
+				});
+
+				function reject(message) {
+					busy = false;
+					chop = 1.0;
+					rippleAt(0.5, 0.42);
+					form.classList.remove('wrong');
+					void form.offsetWidth;
+					form.classList.add('wrong');
+					err.textContent = message || 'Incorrect';
+					err.classList.add('show');
+					input.value = '';
+					input.focus();
+				}
+
+				function part_open(next) {
+					input.blur();
+					stage.classList.add('parting');
+					partTarget = 1.0;
+					if (reduced || !gl) { window.location.href = next; return; }
+					setTimeout(function () { window.location.href = next; }, 1150);
+				}
+
+				input.addEventListener('input', function () {
+					if (err.classList.contains('show')) err.classList.remove('show');
+				});
+			})();
+		</script>
 	</body>
 </html>

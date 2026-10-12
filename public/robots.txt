@@ -1,0 +1,4 @@
+# The door is public. Everything behind it is not.
+User-agent: *
+Allow: /$
+Disallow: /

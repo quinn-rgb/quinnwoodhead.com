@@ -8,12 +8,12 @@ const isActive = (href: string) => {
 };
 
 const links = [
-	{ href: '/', label: 'Home', num: '01' },
+	{ href: '/home', label: 'Home', num: '01' },
 	{ href: '/about', label: 'About', num: '02' },
 	{ href: '/projects', label: 'Projects', num: '03' },
 	{ href: '/athletics', label: 'Athletics', num: '04' },
 	{ href: '/art', label: 'Art', num: '05' },
-	{ href: '/blog', label: 'Blog', num: '06' },
+	{ href: '/coach-portal', label: 'Coach Portal', num: '06' },
 ];
 ---
 
@@ -23,7 +23,7 @@ const links = [
 
 <aside class="sidebar" id="sidebar">
 	<div class="sidebar-top">
-		<a class="brand" href="/">
+		<a class="brand" href="/home">
 			<span class="brand-name">{SITE_TITLE}</span>
 		</a>
 		<p class="brand-tag">Designer · Athlete · Builder</p>
@@ -47,6 +47,7 @@ const links = [
 	<div class="sidebar-bottom">
 		<div class="wave"></div>
 		<a href="mailto:qwoodhead@gmail.com" class="email">qwoodhead@gmail.com</a>
+		<a href="/__logout" class="signout">Sign out</a>
 		<p class="copyright">© {new Date().getFullYear()}</p>
 	</div>
 </aside>
@@ -177,6 +178,18 @@ const links = [
 		color: var(--accent);
 		text-decoration: none;
 		word-break: break-all;
+	}
+	.signout {
+		display: block;
+		margin-top: 0.6em;
+		font-size: 0.72em;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: rgb(var(--gray));
+		text-decoration: none;
+	}
+	.signout:hover {
+		color: var(--accent);
 	}
 	.email:hover {
 		color: var(--accent-dark);

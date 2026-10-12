@@ -105,50 +105,8 @@
 <script type="text/babel">
 const { useState, useEffect, useRef } = React;
 
-// NOTE: client-side gate only — replace with real auth in production.
-// Hash check just to keep the password out of plain source.
-const PASS_HASH = "splash26"; // placeholder — swap for SHA digest later
-
-function Gate({ onUnlock }) {
-  const [pw, setPw] = useState('');
-  const [err, setErr] = useState('');
-  const submit = (e) => {
-    e.preventDefault();
-    if (pw === PASS_HASH) {
-      sessionStorage.setItem('mv-coach-unlocked', '1');
-      onUnlock();
-    } else {
-      setErr('Incorrect — try again');
-      setPw('');
-    }
-  };
-  return (
-    <div className="gate-wrap">
-      <form className="gate" onSubmit={submit}>
-        <div className="eyebrow" style={{ marginBottom: 10 }}>↳ Restricted · Coaching</div>
-        <h1 className="display" style={{ fontSize: 36, margin: '0 0 8px', fontWeight: 500 }}>Welcome back, swimmers.</h1>
-        <p className="body-prose" style={{ fontSize: 15, margin: '0 0 24px' }}>
-          Enter the season password I gave you at practice. Lose it? Text me.
-        </p>
-        <input
-          type="password"
-          autoFocus
-          value={pw}
-          onChange={(e) => { setPw(e.target.value); setErr(''); }}
-          placeholder="Season password"
-        />
-        <div className="err">{err || '\u00A0'}</div>
-        <button type="submit" className="btn primary" style={{ width: '100%', justifyContent: 'center', marginTop: 8 }}>
-          Dive in
-          <span className="arrow"></span>
-        </button>
-        <a href="Portfolio.html" className="font-mono" style={{ display: 'block', textAlign: 'center', marginTop: 18, fontSize: 11, letterSpacing: '0.08em', color: 'var(--fg-3)', textTransform: 'uppercase', textDecoration: 'none' }}>
-          ← Back to portfolio
-        </a>
-      </form>
-    </div>
-  );
-}
+// Access is enforced at the edge by the auth Worker (worker/index.js)
+// before this file is ever served. No client-side gate here.
 
 const LESSONS = [
   { wk: 'WK 01', title: 'Eggbeater foundations', mins: 35, level: 'All', tag: 'Conditioning' },
@@ -324,9 +282,7 @@ function Portal({ onLock }) {
 }
 
 function App() {
-  const [unlocked, setUnlocked] = useState(() => sessionStorage.getItem('mv-coach-unlocked') === '1');
-  const lock = () => { sessionStorage.removeItem('mv-coach-unlocked'); setUnlocked(false); };
-  return unlocked ? <Portal onLock={lock} /> : <Gate onUnlock={() => setUnlocked(true)} />;
+  return <Portal onLock={() => { window.location.href = '/__logout'; }} />;
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(<App />);

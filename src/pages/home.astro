@@ -1,0 +1,70 @@
+---
+// Standalone page — does not use the site's Sidebar/global.css layout.
+// Loads its own design system from /portfolio/.
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+		<title>Quinn Woodhead — Designer · Athlete · Builder</title>
+		<meta
+			name="description"
+			content="Product designer with a passion for athletics and sustainability. Water polo on the USA National Team."
+		/>
+
+		<!-- prevent flash on first paint -->
+		<script is:inline>
+			(function () {
+				try {
+					var s = localStorage.getItem('mv-theme');
+					if (s !== 'light' && s !== 'dark') {
+						s = 'light';
+					}
+					document.documentElement.setAttribute('data-theme', s);
+				} catch (e) {}
+			})();
+		</script>
+
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=JetBrains+Mono:wght@400;500;600&display=swap"
+		/>
+
+		<link rel="stylesheet" href="/portfolio/styles.css" />
+	</head>
+	<body>
+		<div id="root"></div>
+
+		<!-- React (pinned) -->
+		<script
+			src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"
+			integrity="sha384-DGyLxAyjq0f9SPpVevD6IgztCFlnMF6oW/XQGmfe+IsZ8TqEiDrcHkMLKI6fiB/Z"
+			crossorigin="anonymous"
+			is:inline></script>
+		<script
+			src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"
+			integrity="sha384-gTGxhz21lVGYNMcdJOyq01Edg0jhn/c22nsx0kyqP0TxaV5WVdsSH1fSDUf5YJj1"
+			crossorigin="anonymous"
+			is:inline></script>
+		<script
+			src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"
+			integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y"
+			crossorigin="anonymous"
+			is:inline></script>
+
+		<!-- Three.js for fluid hero -->
+		<script src="https://unpkg.com/three@0.160.0/build/three.min.js" is:inline></script>
+
+		<!-- App scripts -->
+		<script type="text/babel" src="/portfolio/fluid.jsx" is:inline></script>
+		<script type="text/babel" src="/portfolio/sections.jsx" is:inline></script>
+		<script type="text/babel" src="/portfolio/tweaks-panel.jsx" is:inline></script>
+		<script type="text/babel" src="/portfolio/app.jsx" is:inline></script>
+	</body>
+</html>
