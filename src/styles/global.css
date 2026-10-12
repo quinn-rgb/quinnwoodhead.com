@@ -9,13 +9,20 @@
 	--fg: #eef2f8;
 	--fg-2: #9fb0cc;
 	--fg-3: #5d6d8a;
+	/* default; each page overrides via body[data-page] below */
 	--accent: #6da3ff;
+	--accent-rgb: 109, 163, 255;
 	--line: rgba(255, 255, 255, 0.10);
 	--line-2: rgba(255, 255, 255, 0.18);
 	--serif: 'Lora', Georgia, 'Times New Roman', serif;
 	--mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 	--measure: 660px;
 }
+
+/* Each tab gets its own hue. Same water, different depth of field. */
+body[data-page='about']     { --accent: #6da3ff; --accent-rgb: 109, 163, 255; }
+body[data-page='work']      { --accent: #f0a868; --accent-rgb: 240, 168, 104; }
+body[data-page='athletics'] { --accent: #46cfb8; --accent-rgb:  70, 207, 184; }
 
 * { box-sizing: border-box; }
 
@@ -28,8 +35,9 @@ body {
 	margin: 0;
 	min-height: 100svh;
 	background:
-		radial-gradient(120% 80% at 50% -10%, #11203f 0%, var(--bg-2) 45%, var(--bg) 100%)
-		no-repeat fixed;
+		radial-gradient(100% 62% at 50% -8%, rgba(var(--accent-rgb), 0.17) 0%, rgba(var(--accent-rgb), 0.04) 38%, transparent 70%),
+		radial-gradient(120% 90% at 50% 0%, var(--bg-2) 0%, var(--bg) 72%)
+		no-repeat fixed var(--bg);
 	color: var(--fg);
 	font-family: var(--serif);
 	font-size: 17px;
@@ -53,6 +61,15 @@ h1 {
 	letter-spacing: -0.01em;
 	margin: 0 0 40px;
 }
+h1::after {
+	content: '';
+	display: block;
+	width: 34px;
+	height: 2px;
+	margin-top: 18px;
+	background: var(--accent);
+	border-radius: 2px;
+}
 
 h2 {
 	font-family: var(--mono);
@@ -60,7 +77,7 @@ h2 {
 	font-size: 11px;
 	letter-spacing: 0.16em;
 	text-transform: uppercase;
-	color: var(--fg-3);
+	color: var(--accent);
 	margin: 64px 0 20px;
 }
 
@@ -89,13 +106,16 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 	padding: 20px 0;
 	border-bottom: 1px solid var(--line);
 	align-items: baseline;
+	transition: background 200ms ease;
 }
+.row:hover { background: rgba(var(--accent-rgb), 0.045); }
 
 .row .when {
 	font-family: var(--mono);
 	font-size: 11px;
 	letter-spacing: 0.08em;
-	color: var(--fg-3);
+	color: var(--accent);
+	opacity: 0.82;
 	padding-top: 4px;
 }
 
@@ -133,7 +153,7 @@ ul.plain li::before {
 	top: 13px;
 	width: 5px;
 	height: 1px;
-	background: var(--fg-3);
+	background: var(--accent);
 }
 
 /* ── footer ───────────────────────────────────────────── */

@@ -6,7 +6,8 @@
 	--fg: #eef2f8;
 	--fg-2: #9fb0cc;
 	--fg-3: #5d6d8a;
-	--accent: #6da3ff;
+	--accent: #c08cf0;
+	--accent-rgb: 192, 140, 240;
 	--line: rgba(255, 255, 255, 0.10);
 	--line-2: rgba(255, 255, 255, 0.18);
 }
@@ -18,8 +19,9 @@ html { background: var(--bg); }
 body {
 	margin: 0;
 	background:
-		radial-gradient(120% 80% at 50% -10%, #11203f 0%, var(--bg-2) 45%, var(--bg) 100%)
-		no-repeat fixed;
+		radial-gradient(100% 62% at 50% -8%, rgba(var(--accent-rgb), 0.17) 0%, rgba(var(--accent-rgb), 0.04) 38%, transparent 70%),
+		radial-gradient(120% 90% at 50% 0%, var(--bg-2) 0%, var(--bg) 72%)
+		no-repeat fixed var(--bg);
 	color: var(--fg);
 	font-family: 'Lora', Georgia, serif;
 	line-height: 1.65;
@@ -49,7 +51,7 @@ body {
 	letter-spacing: 0.16em;
 	text-transform: uppercase;
 	font-weight: 500;
-	color: var(--fg-3);
+	color: var(--accent);
 }
 
 .body-prose {

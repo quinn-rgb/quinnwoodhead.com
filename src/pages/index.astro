@@ -78,11 +78,11 @@ const LINKEDIN = 'https://www.linkedin.com/in/quinn-woodhead-b6558817a/';
 				justify-content: center;
 				padding: 32px;
 				text-align: center;
-				transition: opacity 520ms ease, transform 520ms ease;
+				transition: opacity 900ms cubic-bezier(.4, 0, .2, 1), transform 1100ms cubic-bezier(.4, 0, .2, 1);
 			}
-			.stage.parting {
+			.stage.diving {
 				opacity: 0;
-				transform: scale(1.04);
+				transform: scale(0.975);
 			}
 
 			h1 {
@@ -174,7 +174,7 @@ const LINKEDIN = 'https://www.linkedin.com/in/quinn-woodhead-b6558817a/';
 				transition: color 220ms ease, opacity 520ms ease;
 			}
 			.whisper:hover { color: var(--fg-2); }
-			.stage.parting ~ .whisper { opacity: 0; }
+			.stage.diving ~ .whisper { opacity: 0; }
 
 			@media (prefers-reduced-motion: reduce) {
 				#fluid, .stage, .whisper { transition: none; }
@@ -232,7 +232,7 @@ const LINKEDIN = 'https://www.linkedin.com/in/quinn-woodhead-b6558817a/';
 					'uniform vec2  u_res;',
 					'uniform vec2  u_mouse;',
 					'uniform vec4  u_ripples[6];',
-					'uniform float u_part;',
+					'uniform float u_dive;',
 					'uniform float u_chop;',
 					'',
 					'vec3 mod289(vec3 x){ return x - floor(x * (1.0/289.0)) * 289.0; }',
@@ -276,20 +276,11 @@ const LINKEDIN = 'https://www.linkedin.com/in/quinn-woodhead-b6558817a/';
 					'  vec2 uv = vUv;',
 					'  float aspect = u_res.x / u_res.y;',
 					'',
-					'  // parting — the surface slides away from a centre seam,',
-					'  // with the seam itself wavering the way a real surface would',
-					'  float wobble = snoise(vec2(uv.y * 3.2, u_time * 0.55)) * 0.030 * u_part;',
-					'  float sd  = uv.x - 0.5 + wobble;',
-					'  float gap = u_part * 0.62;',
-					'  vec2  uvp = uv;',
-					'  float opening = 0.0;',
-					'  if (gap > 0.0001) {',
-					'    uvp.x = uv.x - sign(sd) * gap;',
-					'    opening = 1.0 - smoothstep(gap * 0.55, gap, abs(sd));',
-					'  }',
-					'',
-					'  vec2 p = uvp;',
+					'  vec2 p = uv;',
 					'  p.x *= aspect;',
+					'  // descent — the surface draws away as you sink through it',
+					'  p = (p - vec2(aspect * 0.5, 0.5)) * mix(1.0, 0.84, u_dive)',
+					'      + vec2(aspect * 0.5, 0.5);',
 					'  float t = u_time * 0.10;',
 					'',
 					'  vec2 q;',
@@ -301,6 +292,7 @@ const LINKEDIN = 'https://www.linkedin.com/in/quinn-woodhead-b6558817a/';
 					'  r.y = fbm(p * 2.4 + 1.7 * q + vec2(8.3, 2.8) + t * 0.3);',
 					'',
 					'  float f = fbm(p * 1.4 + r);',
+					'  f *= mix(1.0, 0.34, u_dive);   // turbulence stills"',
 					'',
 					'  // wrong password — the surface turns choppy',
 					'  if (u_chop > 0.001) {',
@@ -338,7 +330,7 @@ const LINKEDIN = 'https://www.linkedin.com/in/quinn-woodhead-b6558817a/';
 					'  col = mix(col, cC, smoothstep(0.35, 0.95, g + length(r) * 0.18));',
 					'',
 					'  vec3 highlight = mix(vec3(1.0, 0.96, 0.88), accent, 0.20);',
-					'  col += caustic * highlight * 0.10;',
+					'  col += caustic * highlight * 0.10 * (1.0 - u_dive);',
 					'  col += accent * mInf * 0.03;',
 					'',
 					'  // edge falloff',
@@ -352,10 +344,8 @@ const LINKEDIN = 'https://www.linkedin.com/in/quinn-woodhead-b6558817a/';
 					'  float grain = (fract(sin(dot(uv.xy + u_time * 0.001, vec2(12.9898,78.233))) * 43758.5453) - 0.5);',
 					'  col += grain * 0.012;',
 					'',
-					'  // light through the opening',
-					'  vec3 glow = mix(accent, vec3(1.0), 0.72);',
-					'  col = mix(col, glow, clamp(opening, 0.0, 1.0));',
-					'  col = mix(col, glow, smoothstep(0.76, 1.0, u_part));',
+					'  // the water closes over you',
+					'  col = mix(col, vec3(0.010, 0.017, 0.038), smoothstep(0.0, 0.92, u_dive));',
 					'',
 					'  gl_FragColor = vec4(col, 1.0);',
 					'}'
@@ -370,7 +360,7 @@ const LINKEDIN = 'https://www.linkedin.com/in/quinn-woodhead-b6558817a/';
 				var U = {};
 				var ripples = [];
 				var mouse = { x: 0.5, y: 0.5, lx: 0.5, ly: 0.5 };
-				var part = 0, partTarget = 0, chop = 0;
+				var dive = 0, diveTarget = 0, chop = 0;
 				var start = performance.now();
 				var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -420,7 +410,7 @@ const LINKEDIN = 'https://www.linkedin.com/in/quinn-woodhead-b6558817a/';
 					gl.enableVertexAttribArray(loc);
 					gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
 
-					['u_time','u_res','u_mouse','u_part','u_chop'].forEach(function (n) {
+					['u_time','u_res','u_mouse','u_dive','u_chop'].forEach(function (n) {
 						U[n] = gl.getUniformLocation(prog, n);
 					});
 					U.u_ripples = [];
@@ -439,7 +429,7 @@ const LINKEDIN = 'https://www.linkedin.com/in/quinn-woodhead-b6558817a/';
 				function draw(elapsed) {
 					gl.uniform1f(U.u_time, elapsed);
 					gl.uniform2f(U.u_mouse, mouse.lx, mouse.ly);
-					gl.uniform1f(U.u_part, part);
+					gl.uniform1f(U.u_dive, dive);
 					gl.uniform1f(U.u_chop, chop);
 					for (var i = 0; i < 6; i++) {
 						var rp = ripples[i];
@@ -455,7 +445,8 @@ const LINKEDIN = 'https://www.linkedin.com/in/quinn-woodhead-b6558817a/';
 					mouse.lx += (mouse.x - mouse.lx) * 0.06;
 					mouse.ly += (mouse.y - mouse.ly) * 0.06;
 
-					part += (partTarget - part) * 0.055;
+					// slow, so it reads as settling rather than wiping
+					dive += (diveTarget - dive) * 0.030;
 					chop *= 0.94;
 
 					ripples = ripples.filter(function (r) { return (elapsed - r.t) < 2.5; });
@@ -505,7 +496,7 @@ const LINKEDIN = 'https://www.linkedin.com/in/quinn-woodhead-b6558817a/';
 						.then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
 						.then(function (data) {
 							if (data && data.ok) {
-								part_open(data.next || '/about');
+								descend(data.next || '/about');
 							} else {
 								reject(data && data.error);
 							}
@@ -526,12 +517,14 @@ const LINKEDIN = 'https://www.linkedin.com/in/quinn-woodhead-b6558817a/';
 					input.focus();
 				}
 
-				function part_open(next) {
+				function descend(next) {
 					input.blur();
-					stage.classList.add('parting');
-					partTarget = 1.0;
+					// one last ripple where the field was, then the water stills
+					rippleAt(0.5, 0.46);
+					stage.classList.add('diving');
+					diveTarget = 1.0;
 					if (reduced || !gl) { window.location.href = next; return; }
-					setTimeout(function () { window.location.href = next; }, 1150);
+					setTimeout(function () { window.location.href = next; }, 1400);
 				}
 
 				input.addEventListener('input', function () {
