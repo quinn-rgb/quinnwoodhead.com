@@ -1,144 +1,54 @@
 ---
 import BaseHead from '../components/BaseHead.astro';
+import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-import Sidebar from '../components/Sidebar.astro';
-import { SITE_TITLE } from '../consts';
 
-const teams = [
-	{
-		years: '2016–Present',
-		name: 'USA National Team',
-		role: 'Senior National Team',
-		highlights: [
-			'Alternate, 2024 Paris Olympics',
-			'2× World Championship participant (2023, 2024)',
-			'Gold — 2023 Pan-American Games (Santiago)',
-			'Bronze — 2023 World Cup (Los Angeles)',
-			'Gold — 2022 Intercontinental Cup (Peru)',
-		],
-	},
-	{
-		years: '2023–2025',
-		name: 'Professional — Europe',
-		role: 'ANO Glyfada (Greece) · Telimar Pallanuoto (Italy)',
-		highlights: ['Two pro seasons in two of the top water polo leagues in the world.'],
-	},
-	{
-		years: '2018–2022',
-		name: 'Stanford Men\'s Water Polo',
-		role: 'Three-time team captain',
-		highlights: [
-			'2019 NCAA National Champions',
-			'4× ACWPC All-American (1st Team, 2022)',
-			'4× ACWPC All-Academic',
-			'3× MPSF Conference Champions',
-		],
-	},
-	{
-		years: '2013–2017',
-		name: 'Sir Francis Drake High School',
-		role: 'Team captain',
-		highlights: [
-			'2017 NorCal Champions, CIF NCS Division 1',
-			'2017 NISCA 1st Team All-American',
-			'2016 & 2017 MCAL Player of the Year',
-		],
-	},
+const milestones = [
+	{ when: '2024', what: 'Paris alternate', where: 'Telimar Pallanuoto · Italy · USA',
+	  note: 'Alternate for the Paris Olympics. Pro season with Telimar.' },
+	{ when: '2023', what: 'Pro debut · Pan-Am gold', where: 'ANO Glyfada · Greece',
+	  note: 'Pro season in Greece. Gold at the Pan-American Games in Santiago. Bronze at the World Cup.' },
+	{ when: '2022', what: '1st Team All-American', where: 'Stanford',
+	  note: 'Three years as Stanford captain. ACWPC 1st Team All-American.' },
+	{ when: '2019', what: 'NCAA National Champions', where: 'Stanford',
+	  note: 'Stanford takes the title. ACWPC All-American as a sophomore.' },
+	{ when: '2018', what: 'Joined Stanford', where: 'Stanford',
+	  note: 'First college season with the men’s water polo team.' },
+	{ when: '2017', what: 'NorCal Champions', where: 'Drake High School',
+	  note: 'CIF NCS Division 1. NISCA 1st Team All-American. MCAL Player of the Year.' },
+	{ when: '2013', what: 'First practice', where: 'Drake High School',
+	  note: 'Started water polo with the Drake program.' },
 ];
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={`Athletics — ${SITE_TITLE}`} description="Quinn Woodhead's water polo career — USA National Team, Stanford, professional Europe." />
+		<BaseHead title="Athletics — Quinn Woodhead" description="Quinn Woodhead." />
 	</head>
 	<body>
-		<Sidebar />
+		<Nav />
 		<main>
-			<p class="eyebrow">Water polo · 17+ years</p>
 			<h1>Athletics</h1>
+
 			<p class="lead">
-				I've played water polo since I was a kid. Along the way I've had the privilege of
-				playing for some incredible teams, learning from coaches and teammates who shaped
-				how I think about preparation, leadership, and pushing through hard things.
+				Water polo since 2013 — Drake, Stanford, two pro seasons in Europe, and the
+				USA National Team.
 			</p>
 
-			<section class="teams">
-				{
-					teams.map((t) => (
-						<article class="team">
-							<header>
-								<span class="years">{t.years}</span>
-								<h2>{t.name}</h2>
-								<p class="role">{t.role}</p>
-							</header>
-							<ul>
-								{t.highlights.map((h) => <li>{h}</li>)}
-							</ul>
-						</article>
-					))
-				}
-			</section>
+			<div class="rows">
+				{milestones.map((m) => (
+					<div class="row">
+						<div class="when">{m.when}</div>
+						<div class="what">
+							<h3>{m.what}</h3>
+							<p>{m.note}</p>
+							<span class="where">{m.where}</span>
+						</div>
+					</div>
+				))}
+			</div>
 		</main>
 		<Footer />
-		<style>
-			.eyebrow {
-				color: var(--accent);
-				font-size: 0.9em;
-				letter-spacing: 0.18em;
-				text-transform: uppercase;
-				margin: 0 0 0.3em 0;
-				font-weight: 600;
-			}
-			.lead {
-				font-size: 1.1em;
-				color: rgb(var(--gray-dark));
-				max-width: 680px;
-				margin-bottom: 2.5em;
-			}
-			.teams {
-				display: flex;
-				flex-direction: column;
-				gap: 1.5em;
-			}
-			.team {
-				padding: 1.75em;
-				background: rgba(255, 255, 255, 0.85);
-				border: 1px solid rgba(0, 119, 182, 0.2);
-				border-left: 4px solid var(--accent);
-				border-radius: 12px;
-			}
-			.team header {
-				margin-bottom: 0.75em;
-			}
-			.years {
-				display: inline-block;
-				font-size: 0.8em;
-				font-weight: 700;
-				color: var(--accent);
-				letter-spacing: 0.05em;
-				text-transform: uppercase;
-				margin-bottom: 0.3em;
-			}
-			.team h2 {
-				margin: 0;
-				color: var(--ocean-deep);
-				font-size: 1.6em;
-			}
-			.role {
-				margin: 0.2em 0 0 0;
-				color: rgb(var(--gray-dark));
-				font-style: italic;
-				font-size: 0.95em;
-			}
-			.team ul {
-				margin: 0;
-				padding-left: 1.2em;
-				color: rgb(var(--gray-dark));
-			}
-			.team li {
-				margin-bottom: 0.3em;
-			}
-		</style>
 	</body>
 </html>

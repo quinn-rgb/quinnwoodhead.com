@@ -88,31 +88,22 @@ const LINKEDIN = 'https://www.linkedin.com/in/quinn-woodhead-b6558817a/';
 			h1 {
 				font-family: var(--serif);
 				font-weight: 400;
-				font-size: clamp(42px, 8.2vw, 104px);
+				font-size: clamp(22px, 3.2vw, 34px);
 				line-height: 1;
-				letter-spacing: -0.02em;
+				letter-spacing: 0.01em;
 				margin: 0;
 				text-shadow: 0 2px 40px rgba(7, 11, 22, 0.55);
 			}
 			h1 .dot { color: var(--accent); }
 
-			.line {
-				font-family: var(--serif);
-				font-style: italic;
-				font-size: clamp(15px, 2.1vw, 20px);
-				color: var(--fg-2);
-				margin: 18px 0 0;
-				text-shadow: 0 1px 24px rgba(7, 11, 22, 0.6);
-			}
-
 			form {
-				margin: 52px 0 0;
+				margin: 30px 0 0;
 				display: flex;
 				align-items: center;
 				gap: 10px;
 				border-bottom: 1px solid var(--line);
 				padding: 0 2px 10px;
-				width: min(300px, 78vw);
+				width: min(212px, 62vw);
 				transition: border-color 220ms ease;
 			}
 			form:focus-within { border-bottom-color: var(--accent); }
@@ -132,9 +123,9 @@ const LINKEDIN = 'https://www.linkedin.com/in/quinn-woodhead-b6558817a/';
 				outline: 0;
 				color: var(--fg);
 				font-family: var(--mono);
-				font-size: 13px;
-				letter-spacing: 0.18em;
-				padding: 4px 0;
+				font-size: 11px;
+				letter-spacing: 0.16em;
+				padding: 3px 0;
 			}
 			input::placeholder {
 				color: var(--fg-3);
@@ -147,9 +138,9 @@ const LINKEDIN = 'https://www.linkedin.com/in/quinn-woodhead-b6558817a/';
 				cursor: pointer;
 				color: var(--fg-3);
 				font-family: var(--mono);
-				font-size: 15px;
+				font-size: 13px;
 				line-height: 1;
-				padding: 4px 2px;
+				padding: 3px 2px;
 				transition: color 200ms ease, transform 200ms ease;
 			}
 			button:hover, form:focus-within button { color: var(--accent); transform: translateX(2px); }
@@ -197,7 +188,6 @@ const LINKEDIN = 'https://www.linkedin.com/in/quinn-woodhead-b6558817a/';
 
 		<main class="stage" id="stage">
 			<h1>Quinn Woodhead<span class="dot">.</span></h1>
-			<p class="line">Most of it&rsquo;s under the surface.</p>
 
 			<form id="gate" autocomplete="on">
 				<label for="pw" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">Password</label>
@@ -515,7 +505,7 @@ const LINKEDIN = 'https://www.linkedin.com/in/quinn-woodhead-b6558817a/';
 						.then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
 						.then(function (data) {
 							if (data && data.ok) {
-								part_open(data.next || '/home');
+								part_open(data.next || '/about');
 							} else {
 								reject(data && data.error);
 							}

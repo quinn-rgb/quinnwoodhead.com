@@ -1,0 +1,74 @@
+---
+const here = Astro.url.pathname;
+const on = (href: string) => here === href || here === href + '/';
+
+const links = [
+	{ href: '/about', label: 'About' },
+	{ href: '/projects', label: 'Work' },
+	{ href: '/athletics', label: 'Athletics' },
+	{ href: '/coach-portal', label: 'Coaching' },
+];
+---
+
+<nav>
+	<div class="bar">
+		<a class="mark" href="/about">QW</a>
+		<ul>
+			{links.map((l) => (
+				<li>
+					<a href={l.href} class={on(l.href) ? 'on' : ''}>{l.label}</a>
+				</li>
+			))}
+		</ul>
+	</div>
+</nav>
+
+<style>
+	nav {
+		position: sticky;
+		top: 0;
+		z-index: 10;
+		/* full-bleed backdrop so the bar doesn't read as a floating box */
+		background: linear-gradient(to bottom, var(--bg) 62%, rgba(7, 11, 22, 0));
+	}
+	.bar {
+		display: flex;
+		align-items: center;
+		gap: 28px;
+		max-width: var(--measure);
+		margin: 0 auto;
+		padding: 22px 28px;
+	}
+	.mark {
+		font-family: var(--mono);
+		font-size: 12px;
+		letter-spacing: 0.14em;
+		color: var(--fg);
+		text-decoration: none;
+	}
+	ul {
+		display: flex;
+		gap: 22px;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		flex-wrap: wrap;
+	}
+	ul a {
+		font-family: var(--mono);
+		font-size: 11px;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--fg-3);
+		text-decoration: none;
+		padding-bottom: 3px;
+		border-bottom: 1px solid transparent;
+	}
+	ul a:hover { color: var(--fg-2); text-decoration: none; }
+	ul a.on { color: var(--fg); border-bottom-color: var(--accent); }
+
+	@media (max-width: 600px) {
+		.bar { padding: 18px 20px; gap: 18px; }
+		ul { gap: 14px; }
+	}
+</style>

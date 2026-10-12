@@ -17,27 +17,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=JetBrains+Mono:wght@400;500;600&display=swap" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-<link rel="stylesheet" href="/portfolio/styles.css" />
+<link rel="stylesheet" href="/app.css" />
 <style>
-  .gate-wrap {
-    min-height: 100vh; display: flex; align-items: center; justify-content: center;
-    padding: 32px; background: var(--bg);
-  }
-  .gate {
-    width: min(440px, 100%); border: 1px solid var(--line);
-    border-radius: 18px; padding: 36px 32px; background: var(--bg-2);
-  }
-  .gate input {
-    width: 100%; padding: 14px 16px; border-radius: 10px;
-    border: 1px solid var(--line-2); background: var(--bg);
-    font-family: 'JetBrains Mono', monospace; font-size: 14px;
-    color: var(--fg); outline: none; letter-spacing: 0.04em;
-  }
-  .gate input:focus { border-color: var(--accent); }
-  .gate .err {
-    color: var(--accent); font-family: 'JetBrains Mono', monospace; font-size: 11px;
-    letter-spacing: 0.08em; text-transform: uppercase; margin-top: 12px; min-height: 14px;
-  }
   .portal {
     min-height: 100vh; padding: 56px 0 80px;
   }
@@ -117,13 +98,6 @@ const LESSONS = [
   { wk: 'WK 06', title: 'Counter-attack lanes',  mins: 40, level: 'Adv', tag: 'Tactics' },
 ];
 
-const RESOURCES = [
-  { kind: 'PDF', name: 'Season practice plan — Spring 2026.pdf', size: '420 KB' },
-  { kind: 'PDF', name: 'Dryland warm-up routine.pdf', size: '180 KB' },
-  { kind: 'MP4', name: 'Eggbeater drill — slow motion.mp4', size: '12 MB' },
-  { kind: 'CSV', name: 'Stat sheet template.csv', size: '4 KB' },
-  { kind: 'PDF', name: 'Parent handbook.pdf', size: '320 KB' },
-];
 
 function PlayDesigner() {
   const poolRef = useRef(null);
@@ -214,7 +188,10 @@ function Portal({ onLock }) {
               Welcome back, team.
             </div>
           </div>
-          <button onClick={onLock} className="pill" style={{ background: 'transparent', cursor: 'pointer' }}>↩ Sign out</button>
+          <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+            <a href="/about" className="pill" style={{ textDecoration: 'none' }}>← Site</a>
+            <button onClick={onLock} className="pill" style={{ background: 'transparent', cursor: 'pointer' }}>↩ Sign out</button>
+          </div>
         </div>
 
         {/* Hero CTA */}
@@ -232,7 +209,7 @@ function Portal({ onLock }) {
             <div className="eyebrow" style={{ marginBottom: 12 }}>§ Stats</div>
             <div style={{ display: 'flex', gap: 28 }}>
               <div>
-                <div className="font-serif" style={{ fontSize: 38, fontWeight: 500, lineHeight: 1 }}>14</div>
+                <div className="font-serif" style={{ fontSize: 38, fontWeight: 500, lineHeight: 1 }}>{LESSONS.length}</div>
                 <div className="font-mono" style={{ fontSize: 10.5, letterSpacing: '0.08em', color: 'var(--fg-3)', textTransform: 'uppercase', marginTop: 6 }}>Lessons</div>
               </div>
               <div>
@@ -265,17 +242,6 @@ function Portal({ onLock }) {
           <PlayDesigner />
         </div>
 
-        {/* Resources */}
-        <div className="eyebrow" style={{ marginBottom: 18 }}>§ Downloads</div>
-        <div style={{ borderTop: '1px solid var(--line)', marginBottom: 80 }}>
-          {RESOURCES.map((r, i) => (
-            <div key={i} className="resource">
-              <div className="ico">{r.kind}</div>
-              <div className="font-serif" style={{ fontSize: 16 }}>{r.name}</div>
-              <a href="#" className="pill" download>↓ {r.size}</a>
-            </div>
-          ))}
-        </div>
       </div>
     </div>
   );

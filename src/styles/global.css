@@ -1,188 +1,160 @@
 /*
-  Ocean theme — sidebar layout with dive-deeper home page.
- */
+  Inside the door. Same world as the landing — deep water, serif, mono —
+  but static CSS only. No WebGL on pages you read.
+*/
 
 :root {
-	--accent: #0077b6;
-	--accent-light: #00b4d8;
-	--accent-dark: #023e8a;
-	--black: 3, 22, 52;
-	--gray: 100, 130, 160;
-	--gray-light: 202, 240, 248;
-	--gray-dark: 3, 62, 90;
-	--gray-gradient: rgba(var(--gray-light), 60%), #fff;
-	--ocean-surface: #caf0f8;
-	--ocean-deep: #03045e;
-	--sidebar-w: 240px;
-	--box-shadow:
-		0 2px 6px rgba(2, 62, 138, 15%), 0 8px 24px rgba(2, 62, 138, 18%),
-		0 16px 32px rgba(2, 62, 138, 18%);
-}
-html {
-	scroll-behavior: smooth;
-}
-body {
-	font-family: var(--font-atkinson);
-	margin: 0;
-	padding: 0 0 0 var(--sidebar-w);
-	text-align: left;
-	background: linear-gradient(180deg, #f4fbfd 0%, #ffffff 600px) no-repeat;
-	background-color: #ffffff;
-	word-wrap: break-word;
-	overflow-wrap: break-word;
-	color: rgb(var(--gray-dark));
-	font-size: 20px;
-	line-height: 1.7;
-	min-height: 100vh;
+	--bg: #070b16;
+	--bg-2: #0a1020;
+	--fg: #eef2f8;
+	--fg-2: #9fb0cc;
+	--fg-3: #5d6d8a;
+	--accent: #6da3ff;
+	--line: rgba(255, 255, 255, 0.10);
+	--line-2: rgba(255, 255, 255, 0.18);
+	--serif: 'Lora', Georgia, 'Times New Roman', serif;
+	--mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+	--measure: 660px;
 }
 
-/* Home page is its own beast: edge-to-edge sections, deep gradient, scroll snap */
-body.home {
-	background: linear-gradient(
-			180deg,
-			#e0f7fb 0%,
-			#caf0f8 12%,
-			#90e0ef 28%,
-			#48cae4 44%,
-			#00b4d8 58%,
-			#0077b6 72%,
-			#023e8a 86%,
-			#03045e 100%
-		)
-		no-repeat;
-	background-size: 100% 100%;
-	scroll-snap-type: y proximity;
+* { box-sizing: border-box; }
+
+html {
+	background: var(--bg);
+	-webkit-text-size-adjust: 100%;
+}
+
+body {
+	margin: 0;
+	min-height: 100svh;
+	background:
+		radial-gradient(120% 80% at 50% -10%, #11203f 0%, var(--bg-2) 45%, var(--bg) 100%)
+		no-repeat fixed;
+	color: var(--fg);
+	font-family: var(--serif);
+	font-size: 17px;
+	line-height: 1.65;
+	-webkit-font-smoothing: antialiased;
 }
 
 main {
-	width: 760px;
-	max-width: calc(100% - 2em);
-	margin: auto;
-	padding: 3em 1em;
+	max-width: var(--measure);
+	margin: 0 auto;
+	padding: 92px 28px 120px;
 }
 
-/* Home page main is full-width; sections handle their own padding */
-body.home main {
-	width: auto;
-	max-width: none;
-	margin: 0;
-	padding: 0;
-}
+/* ── type ─────────────────────────────────────────────── */
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-	margin: 0 0 0.5rem 0;
-	color: var(--ocean-deep);
-	line-height: 1.2;
-}
 h1 {
-	font-size: 3.052em;
+	font-family: var(--serif);
+	font-weight: 400;
+	font-size: clamp(30px, 5vw, 44px);
+	line-height: 1.1;
+	letter-spacing: -0.01em;
+	margin: 0 0 40px;
 }
+
 h2 {
-	font-size: 2.441em;
+	font-family: var(--mono);
+	font-weight: 500;
+	font-size: 11px;
+	letter-spacing: 0.16em;
+	text-transform: uppercase;
+	color: var(--fg-3);
+	margin: 64px 0 20px;
 }
+
 h3 {
-	font-size: 1.953em;
-}
-h4 {
-	font-size: 1.563em;
-}
-h5 {
-	font-size: 1.25em;
-}
-strong,
-b {
-	font-weight: 700;
-}
-a {
-	color: var(--accent);
-}
-a:hover {
-	color: var(--accent-dark);
-}
-p {
-	margin-bottom: 1em;
-}
-.prose p {
-	margin-bottom: 2em;
-}
-textarea {
-	width: 100%;
-	font-size: 16px;
-}
-input {
-	font-size: 16px;
-}
-table {
-	width: 100%;
-}
-img {
-	max-width: 100%;
-	height: auto;
-	border-radius: 8px;
-}
-code {
-	padding: 2px 5px;
-	background-color: rgb(var(--gray-light));
-	border-radius: 2px;
-}
-pre {
-	padding: 1.5em;
-	border-radius: 8px;
-}
-pre > code {
-	all: unset;
-}
-blockquote {
-	border-left: 4px solid var(--accent);
-	padding: 0 0 0 20px;
+	font-family: var(--serif);
+	font-weight: 500;
+	font-size: 18px;
 	margin: 0;
-	font-size: 1.333em;
-}
-hr {
-	border: none;
-	border-top: 1px solid rgb(var(--gray-light));
 }
 
-@media (max-width: 900px) {
-	body {
-		padding-left: 0;
-	}
-}
-@media (max-width: 720px) {
-	body {
-		font-size: 18px;
-	}
-	main {
-		padding: 1em;
-	}
+p { margin: 0 0 20px; color: var(--fg-2); }
+p.lead { color: var(--fg); font-size: 19px; }
+strong { color: var(--fg); font-weight: 500; }
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* ── a row: year on the left, substance on the right ──── */
+
+.rows { border-top: 1px solid var(--line); }
+
+.row {
+	display: grid;
+	grid-template-columns: 62px 1fr;
+	gap: 20px;
+	padding: 20px 0;
+	border-bottom: 1px solid var(--line);
+	align-items: baseline;
 }
 
-.sr-only {
-	border: 0;
+.row .when {
+	font-family: var(--mono);
+	font-size: 11px;
+	letter-spacing: 0.08em;
+	color: var(--fg-3);
+	padding-top: 4px;
+}
+
+.row .what p {
+	margin: 6px 0 0;
+	font-size: 15px;
+	color: var(--fg-2);
+}
+
+.row .where {
+	display: block;
+	font-family: var(--mono);
+	font-size: 10px;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: var(--fg-3);
+	margin-top: 8px;
+}
+
+ul.plain {
+	list-style: none;
+	margin: 8px 0 0;
 	padding: 0;
-	margin: 0;
-	position: absolute !important;
+}
+ul.plain li {
+	font-size: 15px;
+	color: var(--fg-2);
+	padding: 3px 0 3px 16px;
+	position: relative;
+}
+ul.plain li::before {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 13px;
+	width: 5px;
 	height: 1px;
-	width: 1px;
-	overflow: hidden;
-	clip: rect(1px 1px 1px 1px);
-	clip: rect(1px, 1px, 1px, 1px);
-	clip-path: inset(50%);
-	white-space: nowrap;
+	background: var(--fg-3);
 }
 
-/* Reduced motion: kill scroll snap and animations for users who opt out */
-@media (prefers-reduced-motion: reduce) {
-	body.home {
-		scroll-snap-type: none;
-	}
-	* {
-		animation-duration: 0.001ms !important;
-		transition-duration: 0.001ms !important;
-	}
+/* ── footer ───────────────────────────────────────────── */
+
+footer {
+	max-width: var(--measure);
+	margin: 0 auto;
+	padding: 0 28px 56px;
+	font-family: var(--mono);
+	font-size: 10px;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: var(--fg-3);
+	display: flex;
+	justify-content: space-between;
+	gap: 16px;
+}
+footer a { color: var(--fg-3); }
+footer a:hover { color: var(--accent); text-decoration: none; }
+
+@media (max-width: 600px) {
+	main { padding: 72px 20px 80px; }
+	.row { grid-template-columns: 52px 1fr; gap: 14px; }
 }

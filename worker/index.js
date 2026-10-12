@@ -130,7 +130,7 @@ export default {
 				'Set-Cookie',
 				`${COOKIE}=${token}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${SESSION_DAYS * 86400}`
 			);
-			return new Response(JSON.stringify({ ok: true, next: '/home' }), { headers });
+			return new Response(JSON.stringify({ ok: true, next: '/about' }), { headers });
 		}
 
 		// ── sign out ────────────────────────────────────────────────────

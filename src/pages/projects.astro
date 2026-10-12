@@ -1,163 +1,48 @@
 ---
 import BaseHead from '../components/BaseHead.astro';
+import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-import Sidebar from '../components/Sidebar.astro';
-import { SITE_TITLE } from '../consts';
 
-const projects = [
-	{
-		title: 'Mobi — Portable Foam Roller',
-		blurb: 'A compact, travel-friendly foam roller for athletes on the move.',
-		tag: 'Product design',
-	},
-	{
-		title: 'The Pulling Robot',
-		blurb: 'A mechanical system for towing — physics, motors, and a few late nights.',
-		tag: 'Robotics',
-	},
-	{
-		title: 'Oyster Shucker',
-		blurb: 'A redesigned tool for opening oysters — safer and easier on the wrist.',
-		tag: 'Product design',
-	},
-	{
-		title: 'The Air Cam',
-		blurb: 'An aerial camera concept exploring lightweight stabilization.',
-		tag: 'Hardware',
-	},
-	{
-		title: 'Building a Bridge',
-		blurb: 'Structural engineering exercise — design, build, test, fail, iterate.',
-		tag: 'Engineering',
-	},
-	{
-		title: 'Unison Product Design',
-		blurb: 'A team-based product design project from start to finish.',
-		tag: 'Team project',
-	},
-	{
-		title: 'Empowered Education',
-		blurb: 'Designing for learning environments and student outcomes.',
-		tag: 'Design research',
-	},
-	{
-		title: 'IDEA App Design',
-		blurb: 'A mobile app concept rooted in user research.',
-		tag: 'UX / UI',
-	},
-	{
-		title: 'Bi-Stable Switch',
-		blurb: 'A mechanism with two equilibrium positions — small, satisfying, hard to get right.',
-		tag: 'Mechanism',
-	},
-	{
-		title: 'Raising a Load',
-		blurb: 'A pulley-and-lever exploration in mechanical advantage.',
-		tag: 'Mechanism',
-	},
-	{
-		title: 'Axial Tension',
-		blurb: 'A study in materials and forces under axial load.',
-		tag: 'Engineering',
-	},
-	{
-		title: 'Personal Logo',
-		blurb: 'Identity design — multiple iterations, lots of trade-offs.',
-		tag: 'Visual design',
-	},
-	{
-		title: 'Laser-Cut Box',
-		blurb: 'A precision exercise in joinery, tolerances, and material selection.',
-		tag: 'Fabrication',
-	},
-	{
-		title: 'Ceramics Stamp',
-		blurb: 'A custom stamp for marking ceramic pieces.',
-		tag: 'Fabrication',
-	},
+const work = [
+	{ title: 'Mobi — Portable Foam Roller', kind: 'Product design' },
+	{ title: 'Oyster Shucker', kind: 'Tool redesign · Steel, resin, CAD' },
+	{ title: 'The Pulling Robot', kind: 'Robotics · Arduino, servos' },
+	{ title: 'The Air Cam', kind: 'Aerial hardware · CAD, stabilization' },
+	{ title: 'Bi-Stable Switch', kind: 'Mechanism · Snap-fit, ABS' },
+	{ title: 'Unison', kind: 'Team product design' },
+	{ title: 'Empowered Education', kind: 'Design research' },
+	{ title: 'IDEA App', kind: 'UX / UI' },
+	{ title: 'Building a Bridge', kind: 'Structural engineering' },
+	{ title: 'Raising a Load', kind: 'Mechanism' },
+	{ title: 'Axial Tension', kind: 'Materials study' },
+	{ title: 'Laser-Cut Box', kind: 'Fabrication' },
+	{ title: 'Ceramics Stamp', kind: 'Fabrication' },
+	{ title: 'Personal Logo', kind: 'Visual design' },
 ];
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={`Projects — ${SITE_TITLE}`} description="Design and engineering projects by Quinn Woodhead." />
+		<BaseHead title="Work — Quinn Woodhead" description="Quinn Woodhead." />
 	</head>
 	<body>
-		<Sidebar />
+		<Nav />
 		<main>
-			<h1>Projects</h1>
-			<p class="lead">
-				A selection of things I've designed and built — from coursework at Stanford to
-				personal experiments. Detailed write-ups are in progress; in the meantime, these
-				are short summaries.
-			</p>
+			<h1>Work</h1>
 
-			<ul class="projects">
-				{
-					projects.map((p) => (
-						<li class="project">
-							<span class="tag">{p.tag}</span>
-							<h3>{p.title}</h3>
-							<p>{p.blurb}</p>
-						</li>
-					))
-				}
-			</ul>
+			<div class="rows">
+				{work.map((w, i) => (
+					<div class="row">
+						<div class="when">{String(i + 1).padStart(2, '0')}</div>
+						<div class="what">
+							<h3>{w.title}</h3>
+							<span class="where">{w.kind}</span>
+						</div>
+					</div>
+				))}
+			</div>
 		</main>
 		<Footer />
-		<style>
-			.lead {
-				font-size: 1.1em;
-				color: rgb(var(--gray-dark));
-				max-width: 680px;
-				margin-bottom: 2em;
-			}
-			.projects {
-				list-style: none;
-				padding: 0;
-				margin: 0;
-				display: grid;
-				grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-				gap: 1.25em;
-			}
-			.project {
-				padding: 1.5em;
-				background: rgba(255, 255, 255, 0.85);
-				border: 1px solid rgba(0, 119, 182, 0.2);
-				border-radius: 12px;
-				transition:
-					transform 0.15s ease,
-					box-shadow 0.15s ease,
-					border-color 0.15s ease;
-			}
-			.project:hover {
-				transform: translateY(-3px);
-				box-shadow: 0 8px 24px rgba(0, 119, 182, 0.18);
-				border-color: var(--accent-light);
-			}
-			.project h3 {
-				margin: 0 0 0.3em 0;
-				color: var(--accent-dark);
-				font-size: 1.2em;
-			}
-			.project p {
-				margin: 0;
-				font-size: 0.95em;
-				color: rgb(var(--gray-dark));
-			}
-			.tag {
-				display: inline-block;
-				font-size: 0.7em;
-				font-weight: 700;
-				text-transform: uppercase;
-				letter-spacing: 0.1em;
-				color: var(--accent);
-				background: rgba(0, 180, 216, 0.1);
-				padding: 0.25em 0.7em;
-				border-radius: 999px;
-				margin-bottom: 0.6em;
-			}
-		</style>
 	</body>
 </html>
