@@ -1,24 +1,32 @@
 ---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 import BaseHead from '../components/BaseHead.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 
-const work = [
-	{ title: 'Mobi — Portable Foam Roller', kind: 'Product design' },
-	{ title: 'Oyster Shucker', kind: 'Tool redesign · Steel, resin, CAD' },
-	{ title: 'The Pulling Robot', kind: 'Robotics · Arduino, servos' },
-	{ title: 'The Air Cam', kind: 'Aerial hardware · CAD, stabilization' },
-	{ title: 'Bi-Stable Switch', kind: 'Mechanism · Snap-fit, ABS' },
-	{ title: 'Unison', kind: 'Team product design' },
-	{ title: 'Empowered Education', kind: 'Design research' },
-	{ title: 'IDEA App', kind: 'UX / UI' },
-	{ title: 'Building a Bridge', kind: 'Structural engineering' },
-	{ title: 'Raising a Load', kind: 'Mechanism' },
-	{ title: 'Axial Tension', kind: 'Materials study' },
-	{ title: 'Laser-Cut Box', kind: 'Fabrication' },
-	{ title: 'Ceramics Stamp', kind: 'Fabrication' },
-	{ title: 'Personal Logo', kind: 'Visual design' },
-];
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/work/*.jpg', { eager: true });
+const shots = (slug: string) =>
+	Object.entries(files)
+		.filter(([k]) => k.split('/').pop()!.startsWith(slug))
+		.sort(([a], [b]) => a.localeCompare(b))
+		.map(([, m]) => m.default);
+
+const featured = [
+	{ slug: 'mobi',             title: 'Mobi',              kind: 'Portable foam roller' },
+	{ slug: 'oyster-shucker',   title: 'Oyster Shucker',    kind: 'Tool redesign · steel, resin, CAD' },
+	{ slug: 'blocker',          title: 'The Blocker',       kind: 'Training hardware · rowing' },
+	{ slug: 'laser-cut-box',    title: 'Laser-Cut Box',     kind: 'Fabrication · joinery, tolerances' },
+	{ slug: 'pulling-robot',    title: 'The Pulling Robot', kind: 'Robotics · Arduino, servos, welding' },
+	{ slug: 'bridge',           title: 'Building a Bridge', kind: 'Structural engineering' },
+	{ slug: 'mechanism',        title: 'Raising a Load',    kind: 'Mechanism · gears, linkages' },
+	{ slug: 'bi-stable-switch', title: 'Bi-Stable Switch',  kind: 'Mechanism · snap-fit, ABS' },
+	{ slug: 'air-cam',          title: 'The Air Cam',       kind: 'Aerial hardware · stabilization' },
+	{ slug: 'stress-analysis',  title: 'Axial Tension',     kind: 'Materials · FEA' },
+	{ slug: 'personal-logo',    title: 'Personal Logo',     kind: 'Visual identity' },
+].map((p) => ({ ...p, images: shots(p.slug) })).filter((p) => p.images.length);
+
+const alsoRan = ['Unison', 'Empowered Education', 'IDEA App', 'Ceramics Stamp'];
 ---
 
 <!doctype html>
@@ -28,21 +36,92 @@ const work = [
 	</head>
 	<body data-page="work">
 		<Nav />
-		<main>
+		<main class="wide">
 			<h1>Work</h1>
 
-			<div class="rows">
-				{work.map((w, i) => (
-					<div class="row">
-						<div class="when">{String(i + 1).padStart(2, '0')}</div>
-						<div class="what">
-							<h3>{w.title}</h3>
-							<span class="where">{w.kind}</span>
+			<div class="grid">
+				{featured.map((p) => (
+					<article class="card">
+						<div class="frame">
+							<Image src={p.images[0]} alt={p.title} widths={[400, 800, 1200]}
+								sizes="(max-width: 760px) 92vw, 44vw" loading="eager" />
+							{p.images.length > 1 && <span class="count">{p.images.length}</span>}
 						</div>
-					</div>
+						<h3>{p.title}</h3>
+						<span class="where">{p.kind}</span>
+						{p.images.length > 1 && (
+							<div class="strip">
+								{p.images.slice(1, 5).map((img) => (
+									<Image src={img} alt="" widths={[160, 320]} sizes="80px" loading="lazy" />
+								))}
+							</div>
+						)}
+					</article>
 				))}
 			</div>
+
+			<h2>Also</h2>
+			<p class="also">{alsoRan.join(' · ')}</p>
 		</main>
 		<Footer />
+
+		<style>
+			main.wide { max-width: 1020px; }
+			.grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+				gap: 34px 26px;
+			}
+			.card h3 { margin-top: 14px; }
+			.frame {
+				position: relative;
+				aspect-ratio: 4 / 3;
+				overflow: hidden;
+				border-radius: 10px;
+				border: 1px solid var(--line);
+				background: var(--bg-2);
+			}
+			.frame :global(img) {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+				display: block;
+				transition: transform 600ms cubic-bezier(.2,.6,.2,1);
+			}
+			.card:hover .frame :global(img) { transform: scale(1.035); }
+			.count {
+				position: absolute;
+				right: 10px;
+				bottom: 10px;
+				font-family: var(--mono);
+				font-size: 10px;
+				letter-spacing: 0.08em;
+				color: var(--fg);
+				background: rgba(7, 11, 22, 0.72);
+				border: 1px solid var(--line-2);
+				border-radius: 20px;
+				padding: 3px 9px;
+				backdrop-filter: blur(6px);
+			}
+			.strip {
+				display: flex;
+				gap: 6px;
+				margin-top: 12px;
+			}
+			.strip :global(img) {
+				width: 56px;
+				height: 42px;
+				object-fit: cover;
+				border-radius: 4px;
+				border: 1px solid var(--line);
+				opacity: 0.6;
+				transition: opacity 250ms ease;
+			}
+			.card:hover .strip :global(img) { opacity: 1; }
+			.also { font-size: 15px; color: var(--fg-3); }
+			@media (max-width: 600px) {
+				.grid { grid-template-columns: 1fr; gap: 28px; }
+			}
+		</style>
 	</body>
 </html>

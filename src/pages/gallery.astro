@@ -1,0 +1,81 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import BaseHead from '../components/BaseHead.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/art/*.jpg', { eager: true });
+const byPrefix = (p: string) =>
+	Object.entries(files)
+		.filter(([k]) => k.split('/').pop()!.startsWith(p))
+		.sort(([a], [b]) => a.localeCompare(b))
+		.map(([, m]) => m.default);
+
+const groups = [
+	{ title: 'Ceramics',     note: 'Hand-thrown and slab-built, with a custom maker’s stamp.', images: byPrefix('ceramics') },
+	{ title: 'Drawing',      note: 'Charcoal and graphite — sometimes a way to think, sometimes the point.', images: byPrefix('drawing') },
+	{ title: '3D Prints',    note: 'Functional parts, the occasional sculpture.', images: [...byPrefix('print'), ...byPrefix('uv')] },
+	{ title: 'Photography',  note: 'In-between moments and places worth remembering.', images: byPrefix('photo') },
+].filter((g) => g.images.length);
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title="Gallery — Quinn Woodhead" description="Quinn Woodhead." />
+	</head>
+	<body data-page="gallery">
+		<Nav />
+		<main class="wide">
+			<h1>Gallery</h1>
+			<p class="lead">Things made outside of work and sport.</p>
+
+			{groups.map((g) => (
+				<section class="group">
+					<h2>{g.title}</h2>
+					<p class="note">{g.note}</p>
+					<div class="tiles">
+						{g.images.map((img) => (
+							<figure>
+								<Image src={img} alt={g.title} widths={[400, 800, 1200]}
+									sizes="(max-width: 700px) 46vw, 30vw" loading="lazy" />
+							</figure>
+						))}
+					</div>
+				</section>
+			))}
+		</main>
+		<Footer />
+
+		<style>
+			main.wide { max-width: 1020px; }
+			.group { margin-bottom: 18px; }
+			.note { font-size: 15px; color: var(--fg-3); margin: -8px 0 20px; }
+			.tiles {
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+				gap: 12px;
+			}
+			figure {
+				margin: 0;
+				aspect-ratio: 1 / 1;
+				overflow: hidden;
+				border-radius: 10px;
+				border: 1px solid var(--line);
+				background: var(--bg-2);
+			}
+			figure :global(img) {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+				display: block;
+				transition: transform 700ms cubic-bezier(.2,.6,.2,1);
+			}
+			figure:hover :global(img) { transform: scale(1.05); }
+			@media (max-width: 600px) {
+				.tiles { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+			}
+		</style>
+	</body>
+</html>

@@ -1,24 +1,41 @@
 ---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 import BaseHead from '../components/BaseHead.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/athletics/*.jpg', { eager: true });
+const pic = (name: string) =>
+	Object.entries(files).find(([k]) => k.endsWith('/' + name + '.jpg'))?.[1].default;
+
+const hero = pic('panam-2023-anthem');
+
 const milestones = [
 	{ when: '2024', what: 'Paris alternate', where: 'Telimar Pallanuoto · Italy · USA',
-	  note: 'Alternate for the Paris Olympics. Pro season with Telimar.' },
+	  note: 'Alternate for the Paris Olympics. Pro season with Telimar.',
+	  shots: ['shooting-red-cap-1', 'usa-team-photo'] },
 	{ when: '2023', what: 'Pro debut · Pan-Am gold', where: 'ANO Glyfada · Greece',
-	  note: 'Pro season in Greece. Gold at the Pan-American Games in Santiago. Bronze at the World Cup.' },
+	  note: 'Pro season in Greece. Gold at the Pan-American Games in Santiago. Bronze at the World Cup.',
+	  shots: ['usa-v-china-2023', 'team-usa-flag', 'match-wide'] },
 	{ when: '2022', what: '1st Team All-American', where: 'Stanford',
-	  note: 'Three years as Stanford captain. ACWPC 1st Team All-American.' },
+	  note: 'Three years as Stanford captain. ACWPC 1st Team All-American.',
+	  shots: ['stanford-celebrate', 'stanford-arm-raised'] },
 	{ when: '2019', what: 'NCAA National Champions', where: 'Stanford',
-	  note: 'Stanford takes the title. ACWPC All-American as a sophomore.' },
+	  note: 'Stanford takes the title. ACWPC All-American as a sophomore.',
+	  shots: ['ncaa-2019-trophy', 'ncaa-celebration', 'trophy-kiss'] },
+	{ when: '2019', what: 'Summer Universiade', where: 'Napoli · Italy',
+	  note: 'International competition with the USA collegiate squad.',
+	  shots: ['napoli-2019', 'universiade-bench'] },
 	{ when: '2018', what: 'Joined Stanford', where: 'Stanford',
-	  note: 'First college season with the men’s water polo team.' },
+	  note: 'First college season with the men’s water polo team.',
+	  shots: ['stanford-swimming', 'team-huddle'] },
 	{ when: '2017', what: 'NorCal Champions', where: 'Drake High School',
-	  note: 'CIF NCS Division 1. NISCA 1st Team All-American. MCAL Player of the Year.' },
+	  note: 'CIF NCS Division 1. NISCA 1st Team All-American. MCAL Player of the Year.',
+	  shots: [] },
 	{ when: '2013', what: 'First practice', where: 'Drake High School',
-	  note: 'Started water polo with the Drake program.' },
-];
+	  note: 'Started water polo with the Drake program.', shots: [] },
+].map((m) => ({ ...m, images: m.shots.map(pic).filter(Boolean) as ImageMetadata[] }));
 ---
 
 <!doctype html>
@@ -28,9 +45,17 @@ const milestones = [
 	</head>
 	<body data-page="athletics">
 		<Nav />
+
+		{hero && (
+			<div class="hero">
+				<Image src={hero} alt="USA Men's National Team, Pan-American Games, Santiago 2023"
+					widths={[800, 1400, 2000]} sizes="100vw" loading="eager" />
+				<div class="veil"></div>
+			</div>
+		)}
+
 		<main>
 			<h1>Athletics</h1>
-
 			<p class="lead">
 				Water polo since 2013 — Drake, Stanford, two pro seasons in Europe, and the
 				USA National Team.
@@ -44,11 +69,62 @@ const milestones = [
 							<h3>{m.what}</h3>
 							<p>{m.note}</p>
 							<span class="where">{m.where}</span>
+							{m.images.length > 0 && (
+								<div class="shots">
+									{m.images.map((img) => (
+										<Image src={img} alt={m.what} widths={[300, 600]}
+											sizes="(max-width: 600px) 45vw, 190px" loading="lazy" />
+									))}
+								</div>
+							)}
 						</div>
 					</div>
 				))}
 			</div>
 		</main>
 		<Footer />
+
+		<style>
+			.hero {
+				position: relative;
+				height: clamp(220px, 38vh, 380px);
+				margin-top: -78px;
+				overflow: hidden;
+			}
+			.hero :global(img) {
+				width: 100%; height: 100%; display: block;
+				object-fit: cover;
+				/* the anthem line-up — keep faces in frame, not torsos */
+				object-position: 50% 18%;
+			}
+			.veil {
+				position: absolute;
+				inset: 0;
+				background: linear-gradient(to bottom,
+					rgba(7,11,22,0.70) 0%, rgba(7,11,22,0.25) 42%, var(--bg) 97%);
+			}
+			main { padding-top: 40px; }
+			.shots {
+				display: flex;
+				gap: 8px;
+				margin-top: 14px;
+				flex-wrap: wrap;
+			}
+			.shots :global(img) {
+				width: 190px;
+				height: 128px;
+				object-fit: cover;
+				border-radius: 8px;
+				border: 1px solid var(--line);
+				transition: transform 500ms cubic-bezier(.2,.6,.2,1), border-color 300ms ease;
+			}
+			.shots :global(img:hover) {
+				transform: scale(1.03);
+				border-color: rgba(var(--accent-rgb), 0.55);
+			}
+			@media (max-width: 600px) {
+				.shots :global(img) { width: calc(50% - 4px); height: 100px; }
+			}
+		</style>
 	</body>
 </html>
