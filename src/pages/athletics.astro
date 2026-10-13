@@ -4,6 +4,7 @@ import type { ImageMetadata } from 'astro';
 import BaseHead from '../components/BaseHead.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
+import stanfordMark from '../assets/brand/stanford.png';
 
 const files = import.meta.glob<{ default: ImageMetadata }>('../assets/athletics/*.jpg', { eager: true });
 const pic = (name: string) =>
@@ -66,7 +67,13 @@ const milestones = [
 					<div class="row">
 						<div class="when">{m.when}</div>
 						<div class="what">
-							<h3>{m.what}</h3>
+							<h3>
+								{m.where.startsWith('Stanford') && (
+									<span class="crest"><Image src={stanfordMark} alt="Stanford" widths={[80,160]} sizes="26px" /></span>
+								)}
+								{m.where.startsWith('Drake') && <span class="crest initials">SFD</span>}
+								{m.what}
+							</h3>
 							<p>{m.note}</p>
 							<span class="where">{m.where}</span>
 							{m.images.length > 0 && (
@@ -104,6 +111,24 @@ const milestones = [
 					rgba(7,11,22,0.70) 0%, rgba(7,11,22,0.25) 42%, var(--bg) 97%);
 			}
 			main { padding-top: 40px; }
+			h3 { display: flex; align-items: center; gap: 10px; }
+			.crest {
+				flex: none;
+				width: 30px; height: 30px;
+				display: inline-flex; align-items: center; justify-content: center;
+				border-radius: 7px;
+				background: #f4f6fa;
+				border: 1px solid var(--line);
+				overflow: hidden;
+			}
+			.crest :global(img) { width: 21px; height: 21px; object-fit: contain; display: block; }
+			.crest.initials {
+				background: transparent;
+				border: 1px solid var(--line-2);
+				font-family: var(--mono);
+				font-size: 9px;
+				color: var(--fg-3);
+			}
 			.shots {
 				display: flex;
 				gap: 8px;

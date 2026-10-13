@@ -1,23 +1,34 @@
 ---
+import { Image } from 'astro:assets';
+import logo from '../assets/brand/logo.png';
+
 const here = Astro.url.pathname;
 const on = (href: string) => here === href || here === href + '/';
 
+// Each tab carries the hue of the page it opens, so the bar reads as a
+// palette and you can tell where you are from colour alone.
 const links = [
-	{ href: '/about', label: 'About' },
-	{ href: '/projects', label: 'Work' },
-	{ href: '/athletics', label: 'Athletics' },
-	{ href: '/gallery', label: 'Gallery' },
-	{ href: '/coach-portal', label: 'Coaching' },
+	{ href: '/about',     label: 'About',     num: '01', hue: '109, 163, 255' },
+	{ href: '/projects',  label: 'Work',      num: '02', hue: '240, 168, 104' },
+	{ href: '/athletics', label: 'Athletics', num: '03', hue: '70, 207, 184' },
+	{ href: '/gallery',   label: 'Gallery',   num: '04', hue: '239, 127, 145' },
 ];
 ---
 
 <nav>
 	<div class="bar">
-		<a class="mark" href="/about">QW</a>
+		<a class="mark" href="/about" aria-label="Quinn Woodhead — home">
+			<Image src={logo} alt="" widths={[64, 128]} sizes="32px" loading="eager" />
+		</a>
+
 		<ul>
 			{links.map((l) => (
 				<li>
-					<a href={l.href} class={on(l.href) ? 'on' : ''}>{l.label}</a>
+					<a href={l.href} class={on(l.href) ? 'on' : ''} style={`--tab: ${l.hue}`}>
+						<span class="num">{l.num}</span>
+						<span class="label">{l.label}</span>
+						<span class="rule"></span>
+					</a>
 				</li>
 			))}
 		</ul>
@@ -29,47 +40,99 @@ const links = [
 		position: sticky;
 		top: 0;
 		z-index: 10;
-		/* full-bleed backdrop so the bar doesn't read as a floating box */
-		background: linear-gradient(to bottom, var(--bg) 62%, rgba(7, 11, 22, 0));
+		background: linear-gradient(to bottom, rgba(7, 11, 22, 0.92) 55%, rgba(7, 11, 22, 0));
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
 	}
 	.bar {
 		display: flex;
 		align-items: center;
-		gap: 28px;
+		gap: 34px;
 		max-width: var(--measure);
 		margin: 0 auto;
-		padding: 22px 40px;
+		padding: 16px 40px 20px;
 	}
+
 	.mark {
-		font-family: var(--mono);
-		font-size: 12px;
-		letter-spacing: 0.14em;
-		color: var(--fg);
-		text-decoration: none;
+		display: flex;
+		align-items: center;
+		flex: none;
+		opacity: 0.95;
+		transition: opacity 220ms ease, transform 420ms cubic-bezier(.2,.7,.2,1);
 	}
+	.mark:hover { opacity: 1; transform: rotate(-4deg) scale(1.06); }
+	.mark :global(img) { width: 32px; height: 32px; object-fit: contain; display: block; }
+
 	ul {
 		display: flex;
-		gap: 22px;
+		gap: 4px;
 		list-style: none;
 		margin: 0;
 		padding: 0;
 		flex-wrap: wrap;
 	}
+
 	ul a {
+		position: relative;
+		display: flex;
+		align-items: baseline;
+		gap: 7px;
+		padding: 7px 13px 9px;
+		border-radius: 8px;
+		text-decoration: none;
+		transition: background 240ms ease;
+	}
+	ul a:hover { background: rgba(var(--tab), 0.09); text-decoration: none; }
+	ul a.on    { background: rgba(var(--tab), 0.13); }
+
+	.num {
+		font-family: var(--mono);
+		font-size: 9px;
+		letter-spacing: 0.08em;
+		color: rgba(var(--tab), 0.95);
+		transition: opacity 240ms ease;
+		opacity: 0.55;
+	}
+	ul a:hover .num, ul a.on .num { opacity: 1; }
+
+	.label {
 		font-family: var(--mono);
 		font-size: 11px;
 		letter-spacing: 0.1em;
 		text-transform: uppercase;
 		color: var(--fg-3);
-		text-decoration: none;
-		padding-bottom: 3px;
-		border-bottom: 1px solid transparent;
+		transition: color 240ms ease;
 	}
-	ul a:hover { color: var(--fg-2); text-decoration: none; }
-	ul a.on { color: var(--fg); border-bottom-color: var(--accent); }
+	ul a:hover .label { color: var(--fg-2); }
+	ul a.on .label { color: var(--fg); }
 
-	@media (max-width: 600px) {
-		.bar { padding: 18px 20px; gap: 18px; }
-		ul { gap: 14px; }
+	/* the hue swipes in under the tab */
+	.rule {
+		position: absolute;
+		left: 13px;
+		right: 13px;
+		bottom: 3px;
+		height: 2px;
+		border-radius: 2px;
+		background: rgb(var(--tab));
+		transform: scaleX(0);
+		transform-origin: left;
+		transition: transform 320ms cubic-bezier(.2,.7,.2,1);
+	}
+	ul a:hover .rule { transform: scaleX(1); }
+	ul a.on .rule {
+		transform: scaleX(1);
+		box-shadow: 0 0 12px rgba(var(--tab), 0.65);
+	}
+
+	@media (max-width: 760px) {
+		.bar { padding: 14px 20px 16px; gap: 18px; }
+		ul { gap: 2px; }
+		ul a { padding: 6px 9px 8px; gap: 5px; }
+		.label { font-size: 10px; letter-spacing: 0.06em; }
+		.rule { left: 9px; right: 9px; }
+	}
+	@media (max-width: 460px) {
+		.num { display: none; }
 	}
 </style>

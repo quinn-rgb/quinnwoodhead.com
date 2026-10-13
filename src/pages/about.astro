@@ -1,13 +1,17 @@
 ---
 import { Image } from 'astro:assets';
 import portrait from '../assets/portrait/grad-1.jpg';
+import stanfordMark from '../assets/brand/stanford.png';
 import BaseHead from '../components/BaseHead.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 
 const education = [
-	{ when: '2022', what: 'Stanford University', where: 'B.S. Product Design · School of Engineering' },
-	{ when: '2018', what: 'Sir Francis Drake High School', where: 'San Anselmo, California' },
+	{ when: '2022', what: 'Stanford University', where: 'B.S. Product Design · School of Engineering',
+	  mark: stanfordMark },
+	// No Drake crest on file — the row falls back to a typographic tile.
+	{ when: '2018', what: 'Sir Francis Drake High School', where: 'San Anselmo, California',
+	  mark: null, initials: 'SFD' },
 ];
 ---
 
@@ -40,9 +44,14 @@ const education = [
 				{education.map((e) => (
 					<div class="row">
 						<div class="when">{e.when}</div>
-						<div class="what">
-							<h3>{e.what}</h3>
-							<span class="where">{e.where}</span>
+						<div class="what school">
+							{e.mark
+								? <span class="crest"><Image src={e.mark} alt="" widths={[80, 160]} sizes="40px" /></span>
+								: <span class="crest initials">{e.initials}</span>}
+							<div>
+								<h3>{e.what}</h3>
+								<span class="where">{e.where}</span>
+							</div>
 						</div>
 					</div>
 				))}
@@ -57,6 +66,25 @@ const education = [
 		</main>
 		<Footer />
 		<style>
+			.school { display: flex; align-items: center; gap: 16px; }
+			.crest {
+				flex: none;
+				width: 44px; height: 44px;
+				display: flex; align-items: center; justify-content: center;
+				border-radius: 9px;
+				background: #f4f6fa;
+				border: 1px solid var(--line);
+				overflow: hidden;
+			}
+			.crest :global(img) { width: 30px; height: 30px; object-fit: contain; display: block; }
+			.crest.initials {
+				background: transparent;
+				border: 1px solid var(--line-2);
+				font-family: var(--mono);
+				font-size: 11px;
+				letter-spacing: 0.06em;
+				color: var(--fg-3);
+			}
 			.portrait {
 				float: right;
 				margin: 4px 0 20px 28px;
@@ -71,7 +99,26 @@ const education = [
 				display: block;
 			}
 			@media (max-width: 560px) {
-				.portrait { float: none; margin: 0 0 24px; width: 150px; }
+				.school { display: flex; align-items: center; gap: 16px; }
+			.crest {
+				flex: none;
+				width: 44px; height: 44px;
+				display: flex; align-items: center; justify-content: center;
+				border-radius: 9px;
+				background: #f4f6fa;
+				border: 1px solid var(--line);
+				overflow: hidden;
+			}
+			.crest :global(img) { width: 30px; height: 30px; object-fit: contain; display: block; }
+			.crest.initials {
+				background: transparent;
+				border: 1px solid var(--line-2);
+				font-family: var(--mono);
+				font-size: 11px;
+				letter-spacing: 0.06em;
+				color: var(--fg-3);
+			}
+			.portrait { float: none; margin: 0 0 24px; width: 150px; }
 				.portrait :global(img) { height: 190px; }
 			}
 		</style>
