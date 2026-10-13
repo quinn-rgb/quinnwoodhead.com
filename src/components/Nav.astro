@@ -32,6 +32,11 @@ const links = [
 				</li>
 			))}
 		</ul>
+
+		<a
+			class={'coaching' + (on('/coach-portal') ? ' on' : '')}
+			href="/coach-portal"
+		>Coaching</a>
 	</div>
 </nav>
 
@@ -47,7 +52,8 @@ const links = [
 	.bar {
 		display: flex;
 		align-items: center;
-		gap: 34px;
+		justify-content: flex-start;
+		gap: 30px;
 		max-width: var(--measure);
 		margin: 0 auto;
 		padding: 16px 40px 20px;
@@ -134,11 +140,35 @@ const links = [
 		box-shadow: 0 0 12px rgba(var(--tab), 0.65);
 	}
 
+	/* Pushed to the far right and styled apart from the numbered tabs —
+	   reachable, but plainly not one of them. */
+	.coaching {
+		margin-left: auto;
+		flex: none;
+		font-family: var(--mono);
+		font-size: 10.5px;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--fg-3);
+		text-decoration: none;
+		padding: 7px 14px;
+		border: 1px solid var(--line);
+		border-radius: 20px;
+		transition: color 220ms ease, border-color 220ms ease, background 220ms ease;
+	}
+	.coaching:hover, .coaching.on {
+		color: #d9bcff;
+		border-color: rgba(192, 140, 240, 0.55);
+		background: rgba(192, 140, 240, 0.12);
+		text-decoration: none;
+	}
+
 	@media (max-width: 760px) {
 		.bar { padding: 14px 20px 16px; gap: 18px; }
 		ul { gap: 2px; }
 		ul a { padding: 6px 9px 8px; gap: 5px; }
 		.label { font-size: 10px; letter-spacing: 0.06em; }
+		.coaching { padding: 5px 10px; font-size: 9.5px; letter-spacing: 0.08em; }
 		.rule { left: 9px; right: 9px; }
 	}
 	@media (max-width: 460px) {

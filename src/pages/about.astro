@@ -172,9 +172,9 @@ const education = [
 			}
 			.crest :global(img) { width: 32px; height: 32px; object-fit: contain; display: block; }
 
-			.sign { margin: 64px 0 0; }
+			.sign { margin: 76px 0 8px; }
 			.sign :global(img) {
-				width: 200px; height: auto; display: block;
+				width: clamp(240px, 32vw, 360px); height: auto; display: block;
 				/* The signature PNG has an opaque white ground, so inverting it
 				   alone leaves a black slab. Screen drops the black back out. */
 				filter: invert(1);

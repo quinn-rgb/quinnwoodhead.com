@@ -16,7 +16,7 @@
 	--line-2: rgba(255, 255, 255, 0.18);
 	--serif: 'Lora', Georgia, 'Times New Roman', serif;
 	--mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-	--measure: 1400px;
+	--measure: 1120px;
 }
 
 /* Each tab gets its own hue. Same water, different depth of field. */
