@@ -164,22 +164,6 @@ ul.plain li::before {
 
 /* ── footer ───────────────────────────────────────────── */
 
-footer {
-	max-width: var(--measure);
-	margin: 0 auto;
-	padding: 0 40px 56px;
-	font-family: var(--mono);
-	font-size: 10px;
-	letter-spacing: 0.12em;
-	text-transform: uppercase;
-	color: var(--fg-3);
-	display: flex;
-	justify-content: space-between;
-	gap: 16px;
-}
-footer a { color: var(--fg-3); }
-footer a:hover { color: var(--accent); text-decoration: none; }
-
 @media (max-width: 600px) {
 	main { padding: 72px 20px 80px; }
 	.row { grid-template-columns: 52px 1fr; gap: 14px; }

@@ -1,12 +1,132 @@
 ---
+import { Image } from 'astro:assets';
+import logo from '../assets/brand/logo.png';
+
+const year = new Date().getFullYear();
+const links = [
+	{ href: '/about', label: 'About' },
+	{ href: '/projects', label: 'Work' },
+	{ href: '/athletics', label: 'Athletics' },
+	{ href: '/gallery', label: 'Gallery' },
+	{ href: '/coach-portal', label: 'Coaching' },
+];
 ---
+
 <footer>
-	<span>&copy; {new Date().getFullYear()} Quinn Woodhead</span>
-	<nav class="quiet">
-		<a href="/__logout">Sign out</a>
-	</nav>
+	<!-- The four tab hues, drawn as one line. The same palette the bar uses. -->
+	<div class="spectrum"></div>
+
+	<div class="inner">
+		<div class="who">
+			<span class="name">Quinn Woodhead</span>
+			<span class="meta">&copy; {year} · California</span>
+		</div>
+
+		<nav class="go">
+			{links.map((l) => <a href={l.href}>{l.label}</a>)}
+			<a href="/__logout" class="out">Sign out</a>
+		</nav>
+	</div>
+
+	<!-- The mark, oversized and sunk below the edge like something on the
+	     pool floor. Decorative only, so it is hidden from assistive tech. -->
+	<div class="watermark" aria-hidden="true">
+		<Image src={logo} alt="" widths={[400, 800]} sizes="460px" loading="lazy" />
+	</div>
 </footer>
 
 <style>
-	.quiet { display: flex; gap: 20px; }
+	footer {
+		position: relative;
+		overflow: hidden;
+		margin-top: 110px;
+		padding: 0 0 128px;
+		isolation: isolate;
+		background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.45));
+	}
+
+	.spectrum {
+		height: 2px;
+		border-radius: 2px;
+		max-width: var(--measure);
+		margin: 0 auto 38px;
+		background: linear-gradient(
+			to right,
+			rgba(109, 163, 255, 0) 0%,
+			rgba(109, 163, 255, 1) 14%,
+			rgba(240, 168, 104, 1) 38%,
+			rgba(70, 207, 184, 1) 62%,
+			rgba(239, 127, 145, 1) 86%,
+			rgba(239, 127, 145, 0) 100%
+		);
+	}
+
+	.inner {
+		position: relative;
+		z-index: 2;
+		max-width: var(--measure);
+		margin: 0 auto;
+		padding: 0 40px;
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 28px;
+		flex-wrap: wrap;
+	}
+
+	.who { display: flex; flex-direction: column; gap: 5px; }
+	.name {
+		font-family: var(--serif);
+		font-size: 17px;
+		color: var(--fg);
+		letter-spacing: 0.01em;
+	}
+	.meta {
+		font-family: var(--mono);
+		font-size: 10px;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--fg-3);
+	}
+
+	.go { display: flex; gap: 22px; flex-wrap: wrap; }
+	.go a {
+		font-family: var(--mono);
+		font-size: 10px;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--fg-3);
+		text-decoration: none;
+		padding-bottom: 3px;
+		border-bottom: 1px solid transparent;
+		transition: color 200ms ease, border-color 200ms ease;
+	}
+	.go a:hover {
+		color: var(--fg);
+		border-bottom-color: var(--accent);
+		text-decoration: none;
+	}
+	.go .out { color: rgba(255, 255, 255, 0.22); }
+
+	.watermark {
+		position: absolute;
+		left: 50%;
+		bottom: -86px;
+		transform: translateX(-50%);
+		z-index: 1;
+		width: 520px;
+		pointer-events: none;
+		/* brightness(0) flattens the whole mark to a silhouette, invert turns
+		   it white — otherwise the landscape fill inverts into dark mountains. */
+		filter: brightness(0) invert(1);
+		opacity: 0.085;
+	}
+	.watermark :global(img) { width: 100%; height: auto; display: block; }
+
+	@media (max-width: 760px) {
+		footer { margin-top: 72px; padding-bottom: 104px; }
+		.inner { padding: 0 20px; gap: 22px; }
+		.go { gap: 16px; }
+		.watermark { width: 320px; bottom: -78px; }
+	}
 </style>

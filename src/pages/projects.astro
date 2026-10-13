@@ -4,6 +4,8 @@ import type { ImageMetadata } from 'astro';
 import BaseHead from '../components/BaseHead.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
+import stanfordMark from '../assets/brand/stanford.png';
+import drakeMark from '../assets/brand/drake.jpg';
 
 const files = import.meta.glob<{ default: ImageMetadata }>('../assets/work/*.jpg', { eager: true });
 const shots = (slug: string) =>
@@ -22,11 +24,16 @@ const featured = [
 	{ slug: 'mechanism',        title: 'Raising a Load',    kind: 'Mechanism · gears, linkages' },
 	{ slug: 'bi-stable-switch', title: 'Bi-Stable Switch',  kind: 'Mechanism · snap-fit, ABS' },
 	{ slug: 'air-cam',          title: 'The Air Cam',       kind: 'Aerial hardware · stabilization' },
-	{ slug: 'stress-analysis',  title: 'Axial Tension',     kind: 'Materials · FEA' },
-	{ slug: 'personal-logo',    title: 'Personal Logo',     kind: 'Visual identity' },
 ].map((p) => ({ ...p, images: shots(p.slug) })).filter((p) => p.images.length);
 
 const alsoRan = ['Unison', 'Empowered Education', 'IDEA App', 'Ceramics Stamp'];
+
+const education = [
+	{ when: '2022', what: 'Stanford University',
+	  where: 'B.S. Product Design · School of Engineering', mark: stanfordMark },
+	{ when: '2018', what: 'Sir Francis Drake High School',
+	  where: 'San Anselmo, California', mark: drakeMark },
+];
 ---
 
 <!doctype html>
@@ -62,6 +69,22 @@ const alsoRan = ['Unison', 'Empowered Education', 'IDEA App', 'Ceramics Stamp'];
 
 			<h2>Also</h2>
 			<p class="also">{alsoRan.join(' · ')}</p>
+
+			<h2>Education</h2>
+			<div class="rows">
+				{education.map((e) => (
+					<div class="row">
+						<div class="when">{e.when}</div>
+						<div class="what school">
+							<span class="crest"><Image src={e.mark} alt="" widths={[90, 180]} sizes="44px" loading="lazy" /></span>
+							<div>
+								<h3>{e.what}</h3>
+								<span class="where">{e.where}</span>
+							</div>
+						</div>
+					</div>
+				))}
+			</div>
 		</main>
 		<Footer />
 
@@ -118,6 +141,14 @@ const alsoRan = ['Unison', 'Empowered Education', 'IDEA App', 'Ceramics Stamp'];
 			}
 			.card:hover .strip :global(img) { opacity: 1; }
 			.also { font-size: 15px; color: var(--fg-3); }
+			.school { display: flex; align-items: center; gap: 16px; }
+			.crest {
+				flex: none; width: 46px; height: 46px;
+				display: flex; align-items: center; justify-content: center;
+				border-radius: 9px; background: #f4f6fa;
+				border: 1px solid var(--line); overflow: hidden;
+			}
+			.crest :global(img) { width: 32px; height: 32px; object-fit: contain; display: block; }
 			@media (max-width: 600px) {
 				.grid { grid-template-columns: 1fr; gap: 28px; }
 			}

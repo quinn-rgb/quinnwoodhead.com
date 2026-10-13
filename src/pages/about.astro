@@ -6,24 +6,17 @@ import Footer from '../components/Footer.astro';
 
 import portrait from '../assets/portrait/grad-1.jpg';
 import signature from '../assets/brand/signature.png';
-import stanfordMark from '../assets/brand/stanford.png';
-import drakeMark from '../assets/brand/drake.jpg';
 
 import athens from '../assets/life/athens-hill.jpg';
 import underwater from '../assets/life/underwater.jpg';
 import cliffs from '../assets/life/cliffs-turquoise.jpg';
-import sunsetSwim from '../assets/life/sunset-swim.jpg';
+import island from '../assets/life/island.jpg';
 import hiking from '../assets/life/hiking.jpg';
 import workshop from '../assets/life/workshop-build.jpg';
-import island from '../assets/life/island.jpg';
 import shooting from '../assets/life/shooting.jpg';
+import sunsetSwim from '../assets/life/sunset-swim.jpg';
 
-const education = [
-	{ when: '2022', what: 'Stanford University',
-	  where: 'B.S. Product Design · School of Engineering', mark: stanfordMark },
-	{ when: '2018', what: 'Sir Francis Drake High School',
-	  where: 'San Anselmo, California', mark: drakeMark },
-];
+const rail = [athens, underwater, workshop, shooting, cliffs, island, hiking, sunsetSwim];
 ---
 
 <!doctype html>
@@ -36,7 +29,7 @@ const education = [
 		<main>
 			<h1>About</h1>
 
-			<div class="intro">
+			<div class="layout">
 				<div class="words">
 					<p class="lead">
 						I&rsquo;m Quinn — a Stanford-trained product designer, a water polo player on the
@@ -54,142 +47,100 @@ const education = [
 						Gold at the Pan-American Games in Santiago, bronze at the World Cup, and an
 						alternate spot for the Paris Olympics in 2024.
 					</p>
-				</div>
-				<figure class="portrait">
-					<Image src={portrait} alt="Quinn Woodhead" widths={[400, 800]} sizes="260px" loading="eager" />
-				</figure>
-			</div>
 
-			<div class="strip">
-				{[athens, underwater, cliffs, island].map((img) => (
-					<figure>
-						<Image src={img} alt="" widths={[400, 800]} sizes="(max-width: 700px) 46vw, 23vw" loading="lazy" />
+					<h2>Design and sport pull on the same thread</h2>
+					<p>
+						Both reward the same things: repetition, noticing small details nobody else will
+						notice, and being willing to do the unglamorous part over and over until it&rsquo;s
+						right. A play you run two hundred times in practice and a part you print for the
+						twelfth time are the same kind of patience.
+					</p>
+					<p>
+						I design products end to end — need-finding and user research, sketching, CAD,
+						prototyping, and the visual communication that carries an idea to someone else.
+						I&rsquo;m drawn to physical things that solve a small real problem cleanly, and to
+						teams that take creativity, sustainability and collaboration seriously.
+					</p>
+
+					<h2>Away from both</h2>
+					<p>
+						I&rsquo;m usually making something with my hands — throwing bowls, printing parts,
+						drawing, or photographing wherever I&rsquo;ve ended up. Two seasons living out of a
+						bag in Greece and Italy turned out to be good for that. Still in the pool most
+						mornings, still designing, still making things by hand.
+					</p>
+
+					<figure class="sign">
+						<Image src={signature} alt="Quinn Woodhead" widths={[400, 800]} sizes="320px" loading="lazy" />
 					</figure>
-				))}
-			</div>
+				</div>
 
-			<h2>Design and sport pull on the same thread</h2>
-			<p>
-				Both reward the same things: repetition, noticing small details nobody else will
-				notice, and being willing to do the unglamorous part over and over until it&rsquo;s
-				right. A play you run two hundred times in practice and a part you print for the
-				twelfth time are the same kind of patience.
-			</p>
-			<p>
-				I design products end to end — need-finding and user research, sketching, CAD,
-				prototyping, and the visual communication that carries an idea to someone else.
-				I&rsquo;m drawn to physical things that solve a small real problem cleanly, and to
-				teams that take creativity, sustainability and collaboration seriously.
-			</p>
-
-			<div class="pair">
-				<figure><Image src={workshop} alt="" widths={[500, 1000]} sizes="(max-width: 700px) 92vw, 47vw" loading="lazy" /></figure>
-				<figure><Image src={shooting} alt="" widths={[500, 1000]} sizes="(max-width: 700px) 92vw, 47vw" loading="lazy" /></figure>
-			</div>
-
-			<h2>Away from both</h2>
-			<p>
-				I&rsquo;m usually making something with my hands — throwing bowls, printing parts,
-				drawing, or photographing wherever I&rsquo;ve ended up. Two seasons living out of a
-				bag in Greece and Italy turned out to be good for that. Still in the pool most
-				mornings, still designing, still making things by hand.
-			</p>
-
-			<div class="pair">
-				<figure><Image src={hiking} alt="" widths={[500, 1000]} sizes="(max-width: 700px) 92vw, 47vw" loading="lazy" /></figure>
-				<figure><Image src={sunsetSwim} alt="" widths={[500, 1000]} sizes="(max-width: 700px) 92vw, 47vw" loading="lazy" /></figure>
-			</div>
-
-			<h2>Education</h2>
-			<div class="rows">
-				{education.map((e) => (
-					<div class="row">
-						<div class="when">{e.when}</div>
-						<div class="what school">
-							<span class="crest"><Image src={e.mark} alt="" widths={[90, 180]} sizes="44px" loading="lazy" /></span>
-							<div>
-								<h3>{e.what}</h3>
-								<span class="where">{e.where}</span>
-							</div>
-						</div>
+				<aside class="rail">
+					<figure class="portrait">
+						<Image src={portrait} alt="Quinn Woodhead" widths={[400, 800]} sizes="300px" loading="eager" />
+					</figure>
+					<div class="thumbs">
+						{rail.map((img) => (
+							<figure>
+								<Image src={img} alt="" widths={[200, 400]} sizes="145px" loading="lazy" />
+							</figure>
+						))}
 					</div>
-				))}
+				</aside>
 			</div>
-
-			<figure class="sign">
-				<Image src={signature} alt="Quinn Woodhead" widths={[300, 600]} sizes="200px" loading="lazy" />
-			</figure>
 		</main>
 		<Footer />
 
 		<style>
-			.intro { display: grid; grid-template-columns: 1fr 260px; gap: 44px; align-items: start; }
-			.words p { max-width: 68ch; }
-			.portrait { margin: 0; }
-			.portrait :global(img) {
-				width: 100%; height: 330px; object-fit: cover;
-				border-radius: 12px; border: 1px solid var(--line); display: block;
-			}
-
-			.strip {
+			.layout {
 				display: grid;
-				grid-template-columns: repeat(4, 1fr);
-				gap: 12px;
-				margin: 44px 0 8px;
+				grid-template-columns: minmax(0, 1fr) 300px;
+				gap: 56px;
+				align-items: start;
 			}
-			.strip figure {
-				margin: 0; aspect-ratio: 4 / 3; overflow: hidden;
-				border-radius: 10px; border: 1px solid var(--line);
+			.words p { max-width: 64ch; }
+			.words h2:first-of-type { margin-top: 52px; }
+
+			.rail { display: flex; flex-direction: column; gap: 10px; }
+			.rail figure { margin: 0; }
+
+			.portrait {
+				aspect-ratio: 4 / 5;
+				overflow: hidden;
+				border-radius: 12px;
+				border: 1px solid var(--line);
 				background: var(--bg-2);
 			}
-			.strip :global(img) {
+			.thumbs {
+				display: grid;
+				grid-template-columns: repeat(2, 1fr);
+				gap: 10px;
+			}
+			.thumbs figure {
+				aspect-ratio: 1 / 1;
+				overflow: hidden;
+				border-radius: 9px;
+				border: 1px solid var(--line);
+				background: var(--bg-2);
+			}
+			.rail :global(img) {
 				width: 100%; height: 100%; object-fit: cover; display: block;
 				transition: transform 600ms cubic-bezier(.2,.6,.2,1);
 			}
-			.strip figure:hover :global(img) { transform: scale(1.04); }
+			.rail figure:hover :global(img) { transform: scale(1.05); }
 
-			.pair {
-				display: grid;
-				grid-template-columns: 1fr 1fr;
-				gap: 14px;
-				margin: 30px 0 10px;
-			}
-			.pair figure {
-				margin: 0; aspect-ratio: 3 / 2; overflow: hidden;
-				border-radius: 12px; border: 1px solid var(--line);
-				background: var(--bg-2);
-			}
-			.pair :global(img) {
-				width: 100%; height: 100%; object-fit: cover; display: block;
-			}
-
-			.school { display: flex; align-items: center; gap: 16px; }
-			.crest {
-				flex: none; width: 46px; height: 46px;
-				display: flex; align-items: center; justify-content: center;
-				border-radius: 9px; background: #f4f6fa;
-				border: 1px solid var(--line); overflow: hidden;
-			}
-			.crest :global(img) { width: 32px; height: 32px; object-fit: contain; display: block; }
-
-			.sign { margin: 76px 0 8px; }
+			.sign { margin: 56px 0 0; }
 			.sign :global(img) {
-				width: clamp(240px, 32vw, 360px); height: auto; display: block;
-				/* The signature PNG has an opaque white ground, so inverting it
-				   alone leaves a black slab. Screen drops the black back out. */
+				width: clamp(240px, 30vw, 340px); height: auto; display: block;
 				filter: invert(1);
 				mix-blend-mode: screen;
 				opacity: 0.8;
 			}
 
-			@media (max-width: 860px) {
-				.intro { grid-template-columns: 1fr; gap: 26px; }
-				.portrait { max-width: 220px; }
-				.portrait :global(img) { height: 280px; }
-			}
-			@media (max-width: 640px) {
-				.strip { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-				.pair { grid-template-columns: 1fr; }
+			@media (max-width: 900px) {
+				.layout { grid-template-columns: 1fr; gap: 36px; }
+				.rail { max-width: 420px; }
+				.thumbs { grid-template-columns: repeat(4, 1fr); }
 			}
 		</style>
 	</body>
