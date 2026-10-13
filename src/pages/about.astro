@@ -5,6 +5,7 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 
 import portrait from '../assets/portrait/grad-1.jpg';
+import dayOne from '../assets/life/anthropic-day-one.jpg';
 import signature from '../assets/brand/signature.png';
 
 import athens from '../assets/life/athens-hill.jpg';
@@ -16,7 +17,7 @@ import workshop from '../assets/life/workshop-build.jpg';
 import shooting from '../assets/life/shooting.jpg';
 import sunsetSwim from '../assets/life/sunset-swim.jpg';
 
-const rail = [athens, underwater, workshop, shooting, cliffs, island, hiking, sunsetSwim];
+const rail = [portrait, athens, underwater, workshop, shooting, cliffs, island, hiking, sunsetSwim];
 ---
 
 <!doctype html>
@@ -48,6 +49,12 @@ const rail = [athens, underwater, workshop, shooting, cliffs, island, hiking, su
 						alternate spot for the Paris Olympics in 2024.
 					</p>
 
+					<h2>Now</h2>
+					<p>
+						San Francisco, on the go-to-market team at Anthropic. Still in the pool most
+						mornings, still coaching, still making things at the weekend.
+					</p>
+
 					<h2>Design and sport pull on the same thread</h2>
 					<p>
 						Both reward the same things: repetition, noticing small details nobody else will
@@ -77,7 +84,9 @@ const rail = [athens, underwater, workshop, shooting, cliffs, island, hiking, su
 
 				<aside class="rail">
 					<figure class="portrait">
-						<Image src={portrait} alt="Quinn Woodhead" widths={[400, 800]} sizes="300px" loading="eager" />
+						<Image src={dayOne} alt="First day at Anthropic, San Francisco"
+							widths={[400, 800]} sizes="300px" loading="eager" />
+						<figcaption>First day · Anthropic · San Francisco</figcaption>
 					</figure>
 					<div class="thumbs">
 						{rail.map((img) => (
@@ -110,6 +119,18 @@ const rail = [athens, underwater, workshop, shooting, cliffs, island, hiking, su
 				border-radius: 12px;
 				border: 1px solid var(--line);
 				background: var(--bg-2);
+				position: relative;
+			}
+			.portrait figcaption {
+				position: absolute;
+				left: 0; right: 0; bottom: 0;
+				padding: 22px 12px 10px;
+				font-family: var(--mono);
+				font-size: 9px;
+				letter-spacing: 0.1em;
+				text-transform: uppercase;
+				color: rgba(255, 255, 255, 0.82);
+				background: linear-gradient(to top, rgba(7,11,22,0.82), transparent);
 			}
 			.thumbs {
 				display: grid;

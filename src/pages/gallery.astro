@@ -4,7 +4,7 @@ import type { ImageMetadata } from 'astro';
 import BaseHead from '../components/BaseHead.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-import band from '../assets/art/photo-desert.jpg';
+import band from '../assets/art/photo-desert-2.jpg';
 
 const files = import.meta.glob<{ default: ImageMetadata }>('../assets/art/*.jpg', { eager: true });
 const byPrefix = (p: string) =>

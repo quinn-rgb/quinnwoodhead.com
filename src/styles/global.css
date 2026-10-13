@@ -21,7 +21,7 @@
 
 /* Each tab gets its own hue. Same water, different depth of field. */
 body[data-page='about']     { --accent: #6da3ff; --accent-rgb: 109, 163, 255; }
-body[data-page='work']      { --accent: #f0a868; --accent-rgb: 240, 168, 104; }
+body[data-page='projects']  { --accent: #f0a868; --accent-rgb: 240, 168, 104; }
 body[data-page='athletics'] { --accent: #46cfb8; --accent-rgb:  70, 207, 184; }
 body[data-page='gallery']   { --accent: #ef7f91; --accent-rgb: 239, 127, 145; }
 
