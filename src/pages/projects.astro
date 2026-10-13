@@ -46,23 +46,25 @@ const education = [
 		<main>
 			<h1>Work</h1>
 
-			<div class="grid">
-				{featured.map((p) => (
-					<article class="card">
-						<div class="frame">
-							<Image src={p.images[0]} alt={p.title} widths={[400, 800, 1200]}
-								sizes="(max-width: 760px) 92vw, 44vw" loading="eager" />
-							{p.images.length > 1 && <span class="count">{p.images.length}</span>}
+			<div class="reel">
+				{featured.map((p, i) => (
+					<article class="piece" style={`--i: ${i}`}>
+						<div class="shot">
+							<Image src={p.images[0]} alt={p.title} widths={[600, 1000, 1600]}
+								sizes="(max-width: 820px) 92vw, 58vw" loading={i < 2 ? 'eager' : 'lazy'} />
 						</div>
-						<h3>{p.title}</h3>
-						<span class="where">{p.kind}</span>
-						{p.images.length > 1 && (
-							<div class="strip">
-								{p.images.slice(1, 5).map((img) => (
-									<Image src={img} alt="" widths={[160, 320]} sizes="80px" loading="lazy" />
-								))}
-							</div>
-						)}
+						<div class="say">
+							<span class="idx">{String(i + 1).padStart(2, '0')}</span>
+							<h3>{p.title}</h3>
+							<span class="where">{p.kind}</span>
+							{p.images.length > 1 && (
+								<div class="strip">
+									{p.images.slice(1, 5).map((img) => (
+										<Image src={img} alt="" widths={[200, 400]} sizes="72px" loading="lazy" />
+									))}
+								</div>
+							)}
+						</div>
 					</article>
 				))}
 			</div>
@@ -89,57 +91,63 @@ const education = [
 		<Footer />
 
 		<style>
-			.grid {
+			.reel { display: flex; flex-direction: column; gap: 74px; }
+
+			.piece {
 				display: grid;
-				grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-				gap: 34px 26px;
+				grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+				gap: 38px;
+				align-items: center;
 			}
-			.card h3 { margin-top: 14px; }
-			.frame {
+			/* every other one flips, so the eye zig-zags down the page */
+			.piece:nth-child(even) .shot { order: 2; }
+			.piece:nth-child(even) .say  { order: 1; text-align: right; }
+			.piece:nth-child(even) .strip { justify-content: flex-end; }
+
+			.shot {
 				position: relative;
-				aspect-ratio: 4 / 3;
+				aspect-ratio: 16 / 10;
 				overflow: hidden;
-				border-radius: 10px;
+				border-radius: 14px;
 				border: 1px solid var(--line);
 				background: var(--bg-2);
 			}
-			.frame :global(img) {
-				width: 100%;
-				height: 100%;
-				object-fit: cover;
+			.shot :global(img) {
+				width: 100%; height: 100%; object-fit: cover; display: block;
+				transition: transform 900ms cubic-bezier(.2,.6,.2,1);
+			}
+			.piece:hover .shot :global(img) { transform: scale(1.04); }
+
+			.say { position: relative; }
+			.idx {
 				display: block;
-				transition: transform 600ms cubic-bezier(.2,.6,.2,1);
+				font-family: var(--serif);
+				font-size: clamp(56px, 7vw, 92px);
+				line-height: 0.8;
+				color: rgba(var(--accent-rgb), 0.16);
+				margin-bottom: 14px;
+				user-select: none;
 			}
-			.card:hover .frame :global(img) { transform: scale(1.035); }
-			.count {
-				position: absolute;
-				right: 10px;
-				bottom: 10px;
-				font-family: var(--mono);
-				font-size: 10px;
-				letter-spacing: 0.08em;
-				color: var(--fg);
-				background: rgba(7, 11, 22, 0.72);
-				border: 1px solid var(--line-2);
-				border-radius: 20px;
-				padding: 3px 9px;
-				backdrop-filter: blur(6px);
-			}
-			.strip {
-				display: flex;
-				gap: 6px;
-				margin-top: 12px;
-			}
+			.say h3 { font-size: clamp(21px, 2.6vw, 29px); }
+			.say .where { margin-top: 10px; }
+
+			.strip { display: flex; gap: 7px; margin-top: 20px; }
 			.strip :global(img) {
-				width: 56px;
-				height: 42px;
-				object-fit: cover;
-				border-radius: 4px;
-				border: 1px solid var(--line);
-				opacity: 0.6;
-				transition: opacity 250ms ease;
+				width: 72px; height: 54px; object-fit: cover;
+				border-radius: 5px; border: 1px solid var(--line);
+				opacity: 0.55; transition: opacity 260ms ease;
 			}
-			.card:hover .strip :global(img) { opacity: 1; }
+			.piece:hover .strip :global(img) { opacity: 1; }
+
+			@media (max-width: 820px) {
+				.reel { gap: 54px; }
+				.piece { grid-template-columns: 1fr; gap: 20px; }
+				.piece:nth-child(even) .shot { order: 0; }
+				.piece:nth-child(even) .say  { order: 0; text-align: left; }
+				.piece:nth-child(even) .strip { justify-content: flex-start; }
+				.idx { font-size: 48px; margin-bottom: 8px; }
+			}
+
 			.also { font-size: 15px; color: var(--fg-3); }
 			.school { display: flex; align-items: center; gap: 16px; }
 			.crest {
@@ -149,9 +157,6 @@ const education = [
 				border: 1px solid var(--line); overflow: hidden;
 			}
 			.crest :global(img) { width: 32px; height: 32px; object-fit: contain; display: block; }
-			@media (max-width: 600px) {
-				.grid { grid-template-columns: 1fr; gap: 28px; }
-			}
 		</style>
 	</body>
 </html>

@@ -4,38 +4,41 @@ import type { ImageMetadata } from 'astro';
 import BaseHead from '../components/BaseHead.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
+
 import stanfordMark from '../assets/brand/stanford.png';
 import drakeMark from '../assets/brand/drake.jpg';
+import usawpMark from '../assets/brand/usawp.jpg';
 
 const files = import.meta.glob<{ default: ImageMetadata }>('../assets/athletics/*.jpg', { eager: true });
 const pic = (name: string) =>
 	Object.entries(files).find(([k]) => k.endsWith('/' + name + '.jpg'))?.[1].default;
 
 const hero = pic('panam-2023-anthem');
+const crests = { usa: usawpMark, stanford: stanfordMark, drake: drakeMark };
 
 const milestones = [
-	{ when: '2024', what: 'Paris alternate', where: 'Telimar Pallanuoto · Italy · USA',
-	  note: 'Alternate for the Paris Olympics. Pro season with Telimar.',
-	  shots: ['shooting-red-cap-1', 'usa-team-photo'] },
-	{ when: '2023', what: 'Pro debut · Pan-Am gold', where: 'ANO Glyfada · Greece',
-	  note: 'Pro season in Greece. Gold at the Pan-American Games in Santiago. Bronze at the World Cup.',
-	  shots: ['usa-v-china-2023', 'team-usa-flag', 'match-wide'] },
-	{ when: '2022', what: '1st Team All-American', where: 'Stanford',
+	{ when: '2024', org: 'usa', what: 'Paris alternate', where: 'Telimar Pallanuoto · Italy · USA',
+	  note: 'Alternate for the Paris Olympics. Pro season with Telimar in Palermo.',
+	  shots: ['pro-telimar', 'pro-1', 'usa-team-photo'] },
+	{ when: '2023', org: 'usa', what: 'Pro debut · Pan-Am gold', where: 'ANO Glyfada · Greece',
+	  note: 'First pro season, outside Athens. Gold at the Pan-American Games in Santiago, bronze at the World Cup.',
+	  shots: ['usa-v-china-2023', 'team-usa-flag', 'pro-2', 'pro-3'] },
+	{ when: '2022', org: 'stanford', what: '1st Team All-American', where: 'Stanford',
 	  note: 'Three years as Stanford captain. ACWPC 1st Team All-American.',
-	  shots: ['stanford-celebrate', 'stanford-arm-raised'] },
-	{ when: '2019', what: 'NCAA National Champions', where: 'Stanford',
+	  shots: ['shooting-red-cap-1', 'shooting-red-cap-2', 'pool-celebration', 'stanford-shot'] },
+	{ when: '2019', org: 'stanford', what: 'NCAA National Champions', where: 'Stanford',
 	  note: 'Stanford takes the title. ACWPC All-American as a sophomore.',
 	  shots: ['ncaa-2019-trophy', 'ncaa-celebration', 'trophy-kiss'] },
-	{ when: '2019', what: 'Summer Universiade', where: 'Napoli · Italy',
+	{ when: '2019', org: 'usa', what: 'Summer Universiade', where: 'Napoli · Italy',
 	  note: 'International competition with the USA collegiate squad.',
 	  shots: ['napoli-2019', 'universiade-bench'] },
-	{ when: '2018', what: 'Joined Stanford', where: 'Stanford',
+	{ when: '2018', org: 'stanford', what: 'Joined Stanford', where: 'Stanford',
 	  note: 'First college season with the men’s water polo team.',
-	  shots: ['stanford-swimming', 'team-huddle'] },
-	{ when: '2017', what: 'NorCal Champions', where: 'Drake High School',
+	  shots: ['stanford-swimming', 'stanford-arm-raised', 'stanford-action-1', 'stanford-action-2', 'stanford-match-1'] },
+	{ when: '2017', org: 'drake', what: 'NorCal Champions', where: 'Drake High School',
 	  note: 'CIF NCS Division 1. NISCA 1st Team All-American. MCAL Player of the Year.',
-	  shots: [] },
-	{ when: '2013', what: 'First practice', where: 'Drake High School',
+	  shots: ['match-wide', 'team-huddle'] },
+	{ when: '2013', org: 'drake', what: 'First practice', where: 'Drake High School',
 	  note: 'Started water polo with the Drake program.', shots: [] },
 ].map((m) => ({ ...m, images: m.shots.map(pic).filter(Boolean) as ImageMetadata[] }));
 ---
@@ -51,7 +54,10 @@ const milestones = [
 		{hero && (
 			<div class="hero">
 				<Image src={hero} alt="USA Men's National Team, Pan-American Games, Santiago 2023"
-					widths={[800, 1400, 2000]} sizes="100vw" loading="eager" />
+					widths={[900, 1600, 2200]} sizes="100vw" loading="eager" />
+				<!-- Everyone goes blue; the window leaves the fourth man from the
+				     left in his own colour. -->
+				<div class="pick"></div>
 				<div class="veil"></div>
 			</div>
 		)}
@@ -69,12 +75,7 @@ const milestones = [
 						<div class="when">{m.when}</div>
 						<div class="what">
 							<h3>
-								{m.where.startsWith('Stanford') && (
-									<span class="crest"><Image src={stanfordMark} alt="Stanford" widths={[80,160]} sizes="26px" /></span>
-								)}
-								{m.where.startsWith('Drake') && (
-									<span class="crest"><Image src={drakeMark} alt="Drake" widths={[80,160]} sizes="26px" /></span>
-								)}
+								<span class="crest"><Image src={crests[m.org]} alt="" widths={[80, 160]} sizes="28px" loading="lazy" /></span>
 								{m.what}
 							</h3>
 							<p>{m.note}</p>
@@ -83,7 +84,7 @@ const milestones = [
 								<div class="shots">
 									{m.images.map((img) => (
 										<Image src={img} alt={m.what} widths={[300, 600]}
-											sizes="(max-width: 600px) 45vw, 190px" loading="lazy" />
+											sizes="(max-width: 600px) 45vw, 180px" loading="lazy" />
 									))}
 								</div>
 							)}
@@ -97,41 +98,49 @@ const milestones = [
 		<style>
 			.hero {
 				position: relative;
-				height: clamp(220px, 38vh, 380px);
-				margin-top: -78px;
+				height: clamp(300px, 48vh, 480px);
+				margin-top: -74px;
 				overflow: hidden;
 			}
 			.hero :global(img) {
 				width: 100%; height: 100%; display: block;
 				object-fit: cover;
-				/* the anthem line-up — keep faces in frame, not torsos */
-				object-position: 50% 18%;
+				/* anchored near the top so the line-up's faces clear the bar */
+				object-position: 50% 4%;
+			}
+			.pick {
+				position: absolute;
+				inset: 0;
+				background: #2a62c8;
+				mix-blend-mode: color;
+				opacity: 0.62;
+				-webkit-mask-image: linear-gradient(to right,
+					#000 0%, #000 53%, rgba(0,0,0,0) 57%,
+					rgba(0,0,0,0) 65%, #000 69%, #000 100%);
+				mask-image: linear-gradient(to right,
+					#000 0%, #000 53%, rgba(0,0,0,0) 57%,
+					rgba(0,0,0,0) 65%, #000 69%, #000 100%);
 			}
 			.veil {
 				position: absolute;
 				inset: 0;
 				background: linear-gradient(to bottom,
-					rgba(7,11,22,0.70) 0%, rgba(7,11,22,0.25) 42%, var(--bg) 97%);
+					rgba(7,11,22,0.72) 0%, rgba(7,11,22,0.12) 38%, var(--bg) 97%);
 			}
 			main { padding-top: 40px; }
+
 			h3 { display: flex; align-items: center; gap: 10px; }
 			.crest {
 				flex: none;
-				width: 30px; height: 30px;
+				width: 32px; height: 32px;
 				display: inline-flex; align-items: center; justify-content: center;
 				border-radius: 7px;
 				background: #f4f6fa;
 				border: 1px solid var(--line);
 				overflow: hidden;
 			}
-			.crest :global(img) { width: 21px; height: 21px; object-fit: contain; display: block; }
-			.crest.initials {
-				background: transparent;
-				border: 1px solid var(--line-2);
-				font-family: var(--mono);
-				font-size: 9px;
-				color: var(--fg-3);
-			}
+			.crest :global(img) { width: 23px; height: 23px; object-fit: contain; display: block; }
+
 			.shots {
 				display: flex;
 				gap: 8px;
@@ -139,8 +148,8 @@ const milestones = [
 				flex-wrap: wrap;
 			}
 			.shots :global(img) {
-				width: 190px;
-				height: 128px;
+				width: 180px;
+				height: 122px;
 				object-fit: cover;
 				border-radius: 8px;
 				border: 1px solid var(--line);
