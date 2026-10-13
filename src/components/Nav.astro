@@ -61,7 +61,16 @@ const links = [
 		transition: opacity 220ms ease, transform 420ms cubic-bezier(.2,.7,.2,1);
 	}
 	.mark:hover { opacity: 1; transform: rotate(-4deg) scale(1.06); }
-	.mark :global(img) { width: 32px; height: 32px; object-fit: contain; display: block; }
+	/* The mark is a black monogram with a landscape fill — it vanishes on a
+	   dark bar, so it sits on a light tile, the same treatment as the crests. */
+	.mark {
+		width: 38px; height: 38px;
+		border-radius: 9px;
+		background: #f2f5fa;
+		border: 1px solid rgba(255, 255, 255, 0.14);
+		justify-content: center;
+	}
+	.mark :global(img) { width: 27px; height: 27px; object-fit: contain; display: block; }
 
 	ul {
 		display: flex;

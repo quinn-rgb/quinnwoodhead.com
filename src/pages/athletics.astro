@@ -5,6 +5,7 @@ import BaseHead from '../components/BaseHead.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import stanfordMark from '../assets/brand/stanford.png';
+import drakeMark from '../assets/brand/drake.jpg';
 
 const files = import.meta.glob<{ default: ImageMetadata }>('../assets/athletics/*.jpg', { eager: true });
 const pic = (name: string) =>
@@ -71,7 +72,9 @@ const milestones = [
 								{m.where.startsWith('Stanford') && (
 									<span class="crest"><Image src={stanfordMark} alt="Stanford" widths={[80,160]} sizes="26px" /></span>
 								)}
-								{m.where.startsWith('Drake') && <span class="crest initials">SFD</span>}
+								{m.where.startsWith('Drake') && (
+									<span class="crest"><Image src={drakeMark} alt="Drake" widths={[80,160]} sizes="26px" /></span>
+								)}
 								{m.what}
 							</h3>
 							<p>{m.note}</p>
