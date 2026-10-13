@@ -48,32 +48,77 @@
     background: var(--bg-2); display: flex; align-items: center; justify-content: center;
     font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--fg-2);
   }
+  .pd-wrap { display: grid; grid-template-columns: 1fr 210px; gap: 20px; align-items: start; }
+  .pd-tools { display: flex; flex-direction: column; gap: 14px; }
+  .pd-group { border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+  .pd-btn {
+    display: block; width: 100%; text-align: left; cursor: pointer;
+    background: transparent; color: var(--fg-2); border: 1px solid var(--line);
+    border-radius: 8px; padding: 9px 11px; margin-bottom: 7px;
+    font-family: 'JetBrains Mono', monospace; font-size: 10.5px;
+    letter-spacing: 0.06em; text-transform: uppercase; transition: all 180ms ease;
+  }
+  .pd-btn:last-child { margin-bottom: 0; }
+  .pd-btn:hover { border-color: var(--line-2); color: var(--fg); }
+  .pd-btn.on { background: var(--accent); border-color: var(--accent); color: #0a0612; font-weight: 500; }
+  .pd-btn small { display: block; text-transform: none; letter-spacing: 0; opacity: 0.65; margin-top: 2px; }
+
   .play-pool {
-    position: relative; aspect-ratio: 16/9; border-radius: 14px;
+    position: relative; width: 100%; aspect-ratio: 20 / 10;
+    border: 1px solid var(--line-2); border-radius: 12px; overflow: hidden;
     background:
-      repeating-linear-gradient(0deg,
-        color-mix(in oklab, var(--accent) 14%, var(--bg-2)) 0,
-        color-mix(in oklab, var(--accent) 14%, var(--bg-2)) 1px,
-        var(--bg-2) 1px, var(--bg-2) 14.28%);
-    border: 1px solid var(--line); overflow: hidden; user-select: none;
+      linear-gradient(to bottom, rgba(109,163,255,0.16) 0%, rgba(70,207,184,0.10) 55%, rgba(10,16,32,0.6) 100%),
+      var(--bg-2);
+    touch-action: none; user-select: none; -webkit-user-select: none;
   }
-  .play-pool .goal-l, .play-pool .goal-r {
-    position: absolute; top: 50%; transform: translateY(-50%);
-    width: 6px; height: 28%; background: var(--accent);
+  .pool-line { position: absolute; left: 0; right: 0; height: 0; border-top: 1px dashed rgba(255,255,255,0.18); }
+  .pool-line span {
+    position: absolute; left: 8px; top: -14px;
+    font-family: 'JetBrains Mono', monospace; font-size: 9px;
+    letter-spacing: 0.1em; color: rgba(255,255,255,0.40);
   }
-  .play-pool .goal-l { left: 4px; } .play-pool .goal-r { right: 4px; }
-  .player-chip {
-    position: absolute; width: 36px; height: 36px; border-radius: 50%;
-    background: var(--accent); color: var(--accent-fg);
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600;
-    cursor: grab; transform: translate(-50%, -50%);
-    box-shadow: 0 4px 14px color-mix(in oklab, var(--accent) 35%, transparent);
-    border: 2px solid var(--bg);
+  .pool-line.m2 { border-top-color: rgba(239,127,145,0.55); }
+  .pool-line.m5 { border-top-color: rgba(240,200,104,0.45); }
+  .pool-line.m6 { border-top-color: rgba(70,207,184,0.40); }
+  .goal-post {
+    position: absolute; top: 0; width: 3px; height: 16px;
+    background: var(--fg); border-radius: 0 0 2px 2px;
   }
-  .player-chip.opp { background: var(--bg); color: var(--fg); border: 2px solid var(--fg); }
-  .player-chip.ball { background: var(--bg); color: var(--accent); border: 2px solid var(--accent); width: 22px; height: 22px; font-size: 11px; }
-  .player-chip:active { cursor: grabbing; }
+  .goal-net {
+    position: absolute; top: 0; height: 9px;
+    border: 2px solid var(--fg); border-top: 0; border-radius: 0 0 4px 4px;
+    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.22) 0 1px, transparent 1px 6px);
+  }
+
+  .chip {
+    position: absolute; width: 34px; height: 34px; margin: -17px 0 0 -17px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600;
+    cursor: grab; touch-action: none; z-index: 3;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.45);
+    transition: box-shadow 160ms ease, transform 160ms ease;
+  }
+  .chip:hover { transform: scale(1.08); }
+  .chip.dragging { cursor: grabbing; transform: scale(1.18); box-shadow: 0 8px 22px rgba(0,0,0,0.6); z-index: 6; }
+  .chip.off  { background: #f2f5fa; color: #0a1020; border: 2px solid #ffffff; }
+  .chip.def  { background: #14213d; color: #cfe0ff; border: 2px solid #6da3ff; }
+  .chip.gk   { background: #f0a868; color: #221202; border: 2px solid #ffd9a8; }
+  .chip.ball { width: 22px; height: 22px; margin: -11px 0 0 -11px; font-size: 10px;
+               background: #ffd34d; color: #3a2a00; border: 2px solid #fff0b8; z-index: 5; }
+  .chip.sel  { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .chip-role {
+    position: absolute; top: 36px; left: 50%; transform: translateX(-50%);
+    font-family: 'JetBrains Mono', monospace; font-size: 8.5px; letter-spacing: 0.06em;
+    color: rgba(255,255,255,0.5); white-space: nowrap; pointer-events: none;
+  }
+  .pd-hint {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.06em;
+    color: var(--fg-3); margin-top: 10px; text-transform: uppercase;
+  }
+  @media (max-width: 760px) {
+    .pd-wrap { grid-template-columns: 1fr; }
+    .chip { width: 30px; height: 30px; margin: -15px 0 0 -15px; font-size: 11px; }
+  }
 </style>
 </head>
 <body>
@@ -99,80 +144,203 @@ const LESSONS = [
 ];
 
 
+// ── Play designer ───────────────────────────────────────────────────
+// Half court, goal at the top. Coordinates are in metres on a 20m-wide,
+// 14m-deep field so the 2 / 5 / 6m lines sit where they really sit.
+const POOL_W = 20, POOL_D = 10;
+const GOAL_W = 3;                       // regulation goal mouth
+
+const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+
+// 6 on 6 — the umbrella (3–3): centre on 2m, wings outside the posts,
+// flats in line with the posts at ~5m, point at the top.
+const SIX_ON_SIX = {
+  label: '6 on 6', sub: 'Umbrella · 3–3',
+  offense: [
+    { id:'o6', n:'C', role:'Centre',  x:10.0, y:2.0 },
+    { id:'o1', n:'1', role:'Wing',    x:5.6,  y:2.2 },
+    { id:'o5', n:'5', role:'Wing',    x:14.4, y:2.2 },
+    { id:'o2', n:'2', role:'Flat',    x:7.4,  y:5.6 },
+    { id:'o4', n:'4', role:'Flat',    x:12.6, y:5.6 },
+    { id:'o3', n:'3', role:'Point',   x:10.0, y:7.6 },
+  ],
+  defense: [
+    { id:'dH', n:'H', role:'Hole D',  x:10.0, y:3.3 },
+    { id:'d1', n:'',  role:'',        x:5.9,  y:1.2 },
+    { id:'d5', n:'',  role:'',        x:14.1, y:1.2 },
+    { id:'d2', n:'',  role:'',        x:7.7,  y:4.4 },
+    { id:'d4', n:'',  role:'',        x:12.3, y:4.4 },
+    { id:'d3', n:'',  role:'',        x:10.0, y:6.2 },
+  ],
+  ball: { x:11.4, y:8.3 },
+};
+
+// 6 on 5 — the 4–2. Four on the 2m line (two wings, two in line with the
+// posts), two up top at ~5m. Defence drops into a 3–2 zone.
+const SIX_ON_FIVE = {
+  label: '6 on 5', sub: 'Man-up · 4–2',
+  offense: [
+    { id:'o1', n:'1', role:'Wing',  x:5.8,  y:2.0 },
+    { id:'o2', n:'2', role:'Post',  x:8.5,  y:2.0 },
+    { id:'o3', n:'3', role:'Post',  x:11.5, y:2.0 },
+    { id:'o4', n:'4', role:'Wing',  x:14.2, y:2.0 },
+    { id:'o5', n:'5', role:'Top',   x:8.5,  y:5.6 },
+    { id:'o6', n:'6', role:'Top',   x:11.5, y:5.6 },
+  ],
+  defense: [
+    { id:'d1', n:'', role:'', x:7.5,  y:3.3 },
+    { id:'d2', n:'', role:'', x:10.0, y:3.3 },
+    { id:'d3', n:'', role:'', x:12.5, y:3.3 },
+    { id:'d4', n:'', role:'', x:8.2,  y:7.2 },
+    { id:'d5', n:'', role:'', x:11.8, y:7.2 },
+  ],
+  ball: { x:11.5, y:6.6 },
+};
+
+const SETS = { '6v6': SIX_ON_SIX, '6v5': SIX_ON_FIVE };
+
 function PlayDesigner() {
   const poolRef = useRef(null);
-  const [players, setPlayers] = useState([
-    { id: 'p1', x: 22, y: 30, kind: 'us',  label: '1' },
-    { id: 'p2', x: 28, y: 60, kind: 'us',  label: '2' },
-    { id: 'p3', x: 50, y: 50, kind: 'us',  label: '3' },
-    { id: 'p4', x: 70, y: 30, kind: 'us',  label: '4' },
-    { id: 'p5', x: 78, y: 65, kind: 'us',  label: '5' },
-    { id: 'p6', x: 88, y: 50, kind: 'us',  label: 'C' },
-    { id: 'o1', x: 60, y: 20, kind: 'opp', label: '1' },
-    { id: 'o2', x: 60, y: 80, kind: 'opp', label: '2' },
-    { id: 'o3', x: 75, y: 50, kind: 'opp', label: '3' },
-    { id: 'b',  x: 50, y: 50, kind: 'ball', label: '●' },
-  ]);
-  const dragRef = useRef(null);
+  const [key, setKey] = useState('6v6');
+  const [showDef, setShowDef] = useState(true);
+  const [mode, setMode] = useState('move');     // move | pass
+  const [dragId, setDragId] = useState(null);
+  const [selected, setSelected] = useState(null);
+  const [passes, setPasses] = useState([]);
 
-  const onDown = (id) => (e) => {
+  const build = (k) => {
+    const s = SETS[k];
+    return [
+      ...s.offense.map(p => ({ ...p, side:'off' })),
+      ...s.defense.map(p => ({ ...p, side:'def' })),
+      { id:'gk', n:'G', role:'Keeper', x:10, y:0.7, side:'gk' },
+      { id:'ball', n:'', role:'', x:s.ball.x, y:s.ball.y, side:'ball' },
+    ];
+  };
+
+  const [players, setPlayers] = useState(() => build('6v6'));
+
+  const load = (k) => { setKey(k); setPlayers(build(k)); setPasses([]); setSelected(null); };
+  const reset = () => { setPlayers(build(key)); setPasses([]); setSelected(null); };
+
+  const pct = (p) => ({ left: (p.x / POOL_W) * 100 + '%', top: (p.y / POOL_D) * 100 + '%' });
+
+  const down = (id) => (e) => {
+    if (mode === 'pass') {
+      if (id === 'ball') return;
+      if (!selected) { setSelected(id); }
+      else if (selected === id) { setSelected(null); }
+      else { setPasses(ps => [...ps, { from: selected, to: id }]); setSelected(null); }
+      return;
+    }
     e.preventDefault();
-    dragRef.current = id;
+    e.currentTarget.setPointerCapture(e.pointerId);
+    setDragId(id);
   };
-  const onMove = (e) => {
-    if (!dragRef.current) return;
+
+  const move = (e) => {
+    if (!dragId) return;
     const r = poolRef.current.getBoundingClientRect();
-    const x = ((e.clientX - r.left) / r.width) * 100;
-    const y = ((e.clientY - r.top) / r.height) * 100;
-    setPlayers(prev => prev.map(p => p.id === dragRef.current
-      ? { ...p, x: Math.max(2, Math.min(98, x)), y: Math.max(4, Math.min(96, y)) }
-      : p));
+    const x = clamp(((e.clientX - r.left) / r.width) * POOL_W, 0.7, POOL_W - 0.7);
+    const y = clamp(((e.clientY - r.top) / r.height) * POOL_D, 0.4, POOL_D - 0.5);
+    setPlayers(prev => prev.map(p => (p.id === dragId ? { ...p, x, y } : p)));
   };
-  const onUp = () => { dragRef.current = null; };
 
-  useEffect(() => {
-    window.addEventListener('mousemove', onMove);
-    window.addEventListener('mouseup', onUp);
-    return () => {
-      window.removeEventListener('mousemove', onMove);
-      window.removeEventListener('mouseup', onUp);
-    };
-  }, []);
+  const up = (e) => {
+    if (!dragId) return;
+    try { e.currentTarget.releasePointerCapture(e.pointerId); } catch (_) {}
+    setDragId(null);
+  };
 
-  const reset = () => setPlayers([
-    { id: 'p1', x: 22, y: 30, kind: 'us', label: '1' },
-    { id: 'p2', x: 28, y: 60, kind: 'us', label: '2' },
-    { id: 'p3', x: 50, y: 50, kind: 'us', label: '3' },
-    { id: 'p4', x: 70, y: 30, kind: 'us', label: '4' },
-    { id: 'p5', x: 78, y: 65, kind: 'us', label: '5' },
-    { id: 'p6', x: 88, y: 50, kind: 'us', label: 'C' },
-    { id: 'o1', x: 60, y: 20, kind: 'opp', label: '1' },
-    { id: 'o2', x: 60, y: 80, kind: 'opp', label: '2' },
-    { id: 'o3', x: 75, y: 50, kind: 'opp', label: '3' },
-    { id: 'b',  x: 50, y: 50, kind: 'ball', label: '●' },
-  ]);
+  const find = (id) => players.find(p => p.id === id);
+  const visible = players.filter(p => showDef || p.side !== 'def');
+  const set = SETS[key];
 
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 14 }}>
-        <span className="eyebrow">§ Play designer · drag to position</span>
-        <button onClick={reset} className="pill" style={{ background: 'transparent', cursor: 'pointer' }}>↺ Reset</button>
+    <div className="pd-wrap">
+      <div>
+        <div className="play-pool" ref={poolRef}>
+          {/* goal mouth, drawn to scale */}
+          <div className="goal-net" style={{
+            left: ((POOL_W - GOAL_W) / 2 / POOL_W) * 100 + '%',
+            width: (GOAL_W / POOL_W) * 100 + '%' }} />
+          <div className="goal-post" style={{ left: ((POOL_W - GOAL_W) / 2 / POOL_W) * 100 + '%' }} />
+          <div className="goal-post" style={{ left: ((POOL_W + GOAL_W) / 2 / POOL_W) * 100 + '%' }} />
+
+          <div className="pool-line m2" style={{ top: (2 / POOL_D) * 100 + '%' }}><span>2 M</span></div>
+          <div className="pool-line m5" style={{ top: (5 / POOL_D) * 100 + '%' }}><span>5 M</span></div>
+          <div className="pool-line m6" style={{ top: (6 / POOL_D) * 100 + '%' }}><span>6 M</span></div>
+
+          {/* passing lines */}
+          <svg style={{ position:'absolute', inset:0, width:'100%', height:'100%',
+                        pointerEvents:'none', zIndex:2 }}>
+            <defs>
+              <marker id="ah" markerWidth="9" markerHeight="9" refX="7" refY="3"
+                      orient="auto" markerUnits="strokeWidth">
+                <path d="M0,0 L0,6 L8,3 z" fill="#ffd34d" />
+              </marker>
+            </defs>
+            {passes.map((ps, i) => {
+              const a = find(ps.from), b = find(ps.to);
+              if (!a || !b) return null;
+              return <line key={i}
+                x1={(a.x / POOL_W) * 100 + '%'} y1={(a.y / POOL_D) * 100 + '%'}
+                x2={(b.x / POOL_W) * 100 + '%'} y2={(b.y / POOL_D) * 100 + '%'}
+                stroke="#ffd34d" strokeWidth="2" strokeDasharray="6 4"
+                markerEnd="url(#ah)" opacity="0.85" />;
+            })}
+          </svg>
+
+          {visible.map(p => (
+            <div key={p.id}
+                 className={'chip ' + p.side
+                   + (dragId === p.id ? ' dragging' : '')
+                   + (selected === p.id ? ' sel' : '')}
+                 style={pct(p)}
+                 onPointerDown={down(p.id)}
+                 onPointerMove={move}
+                 onPointerUp={up}
+                 onPointerCancel={up}>
+              {p.n}
+              {p.role && p.side === 'off' && <span className="chip-role">{p.role}</span>}
+            </div>
+          ))}
+        </div>
+        <div className="pd-hint">
+          {mode === 'move'
+            ? 'Drag anyone — players, keeper, ball'
+            : selected ? 'Now tap who receives it' : 'Tap a passer, then a receiver'}
+        </div>
       </div>
-      <div ref={poolRef} className="play-pool">
-        <div className="goal-l"></div>
-        <div className="goal-r"></div>
-        {players.map(p => (
-          <div
-            key={p.id}
-            className={`player-chip ${p.kind === 'opp' ? 'opp' : ''} ${p.kind === 'ball' ? 'ball' : ''}`}
-            style={{ left: `${p.x}%`, top: `${p.y}%` }}
-            onMouseDown={onDown(p.id)}
-          >{p.label}</div>
-        ))}
+
+      <div className="pd-tools">
+        <div className="pd-group">
+          <div className="eyebrow" style={{ marginBottom: 10 }}>§ Set</div>
+          {Object.keys(SETS).map(k => (
+            <button key={k} className={'pd-btn' + (key === k ? ' on' : '')} onClick={() => load(k)}>
+              {SETS[k].label}
+              <small>{SETS[k].sub}</small>
+            </button>
+          ))}
+        </div>
+
+        <div className="pd-group">
+          <div className="eyebrow" style={{ marginBottom: 10 }}>§ Tools</div>
+          <button className={'pd-btn' + (mode === 'move' ? ' on' : '')}
+                  onClick={() => { setMode('move'); setSelected(null); }}>Move</button>
+          <button className={'pd-btn' + (mode === 'pass' ? ' on' : '')}
+                  onClick={() => setMode('pass')}>Draw pass</button>
+          <button className={'pd-btn' + (showDef ? ' on' : '')}
+                  onClick={() => setShowDef(d => !d)}>
+            Defence {showDef ? 'on' : 'off'}
+          </button>
+        </div>
+
+        <div className="pd-group">
+          <button className="pd-btn" onClick={() => setPasses([])}>Clear passes</button>
+          <button className="pd-btn" onClick={reset}>Reset {set.label}</button>
+        </div>
       </div>
-      <p className="body-prose" style={{ fontSize: 14, marginTop: 14, color: 'var(--fg-2)' }}>
-        Drag any chip to set up a play. Use this to learn 6-on-5 spacing — your default position is your jersey number.
-      </p>
     </div>
   );
 }

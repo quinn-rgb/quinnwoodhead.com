@@ -27,7 +27,7 @@ const groups = [
 	</head>
 	<body data-page="gallery">
 		<Nav />
-		<main class="wide">
+		<main>
 			<h1>Gallery</h1>
 			<p class="lead">Things made outside of work and sport.</p>
 
@@ -49,12 +49,11 @@ const groups = [
 		<Footer />
 
 		<style>
-			main.wide { max-width: 1020px; }
 			.group { margin-bottom: 18px; }
 			.note { font-size: 15px; color: var(--fg-3); margin: -8px 0 20px; }
 			.tiles {
 				display: grid;
-				grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+				grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
 				gap: 12px;
 			}
 			figure {

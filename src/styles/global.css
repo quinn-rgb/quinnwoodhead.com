@@ -16,7 +16,7 @@
 	--line-2: rgba(255, 255, 255, 0.18);
 	--serif: 'Lora', Georgia, 'Times New Roman', serif;
 	--mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-	--measure: 660px;
+	--measure: 1400px;
 }
 
 /* Each tab gets its own hue. Same water, different depth of field. */
@@ -49,8 +49,13 @@ body {
 main {
 	max-width: var(--measure);
 	margin: 0 auto;
-	padding: 92px 28px 120px;
+	padding: 92px 40px 120px;
 }
+
+/* The container goes wide; running text still stops at a readable
+   line length, because 1400px of prose is unreadable. */
+main > p,
+main > .rows .what p { max-width: 74ch; }
 
 /* ── type ─────────────────────────────────────────────── */
 
@@ -162,7 +167,7 @@ ul.plain li::before {
 footer {
 	max-width: var(--measure);
 	margin: 0 auto;
-	padding: 0 28px 56px;
+	padding: 0 40px 56px;
 	font-family: var(--mono);
 	font-size: 10px;
 	letter-spacing: 0.12em;

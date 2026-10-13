@@ -29,9 +29,9 @@ body {
 }
 
 .container {
-	max-width: 860px;
+	max-width: 1400px;
 	margin: 0 auto;
-	padding: 0 28px;
+	padding: 0 40px;
 }
 
 .font-mono { font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace; }
