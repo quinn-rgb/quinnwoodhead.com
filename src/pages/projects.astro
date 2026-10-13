@@ -91,14 +91,19 @@ const education = [
 		<Footer />
 
 		<style>
-			.reel { display: flex; flex-direction: column; gap: 74px; }
+			.reel { display: flex; flex-direction: column; gap: 56px; }
 
 			.piece {
 				display: grid;
-				grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
-				gap: 38px;
+				grid-template-columns: minmax(0, 1fr) minmax(0, 0.72fr);
+				gap: 36px;
 				align-items: center;
+				/* narrower than the column and alternating sides, so the stagger
+				   is in the page too, not only inside each row */
+				max-width: 880px;
+				margin-right: auto;
 			}
+			.piece:nth-child(even) { margin-right: 0; margin-left: auto; }
 			/* every other one flips, so the eye zig-zags down the page */
 			.piece:nth-child(even) .shot { order: 2; }
 			.piece:nth-child(even) .say  { order: 1; text-align: right; }
@@ -106,7 +111,7 @@ const education = [
 
 			.shot {
 				position: relative;
-				aspect-ratio: 16 / 10;
+				aspect-ratio: 3 / 2;
 				overflow: hidden;
 				border-radius: 14px;
 				border: 1px solid var(--line);
@@ -122,18 +127,18 @@ const education = [
 			.idx {
 				display: block;
 				font-family: var(--serif);
-				font-size: clamp(56px, 7vw, 92px);
+				font-size: clamp(40px, 4.6vw, 62px);
 				line-height: 0.8;
 				color: rgba(var(--accent-rgb), 0.16);
-				margin-bottom: 14px;
+				margin-bottom: 10px;
 				user-select: none;
 			}
-			.say h3 { font-size: clamp(21px, 2.6vw, 29px); }
+			.say h3 { font-size: clamp(19px, 2.1vw, 24px); }
 			.say .where { margin-top: 10px; }
 
 			.strip { display: flex; gap: 7px; margin-top: 20px; }
 			.strip :global(img) {
-				width: 72px; height: 54px; object-fit: cover;
+				width: 62px; height: 46px; object-fit: cover;
 				border-radius: 5px; border: 1px solid var(--line);
 				opacity: 0.55; transition: opacity 260ms ease;
 			}
