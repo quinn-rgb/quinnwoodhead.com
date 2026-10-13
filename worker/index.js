@@ -19,6 +19,7 @@ const PUBLIC_PATHS = new Set([
 	'/',
 	'/index.html',
 	'/favicon.svg',
+	'/og.jpg',        // link-preview card; crawlers fetch this unauthenticated
 	'/robots.txt',
 	'/__auth',
 ]);
