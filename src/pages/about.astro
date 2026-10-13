@@ -30,6 +30,10 @@ const rail = [portrait, athens, underwater, workshop, shooting, cliffs, island, 
 		<main>
 			<h1>About</h1>
 
+			<figure class="sign">
+				<Image src={signature} alt="Quinn Woodhead" widths={[400, 800]} sizes="260px" loading="eager" />
+			</figure>
+
 			<div class="layout">
 				<div class="words">
 					<p class="lead">
@@ -78,9 +82,6 @@ const rail = [portrait, athens, underwater, workshop, shooting, cliffs, island, 
 						mornings, still designing, still making things by hand.
 					</p>
 
-					<figure class="sign">
-						<Image src={signature} alt="Quinn Woodhead" widths={[400, 800]} sizes="320px" loading="lazy" />
-					</figure>
 				</div>
 
 				<aside class="rail">
@@ -151,12 +152,12 @@ const rail = [portrait, athens, underwater, workshop, shooting, cliffs, island, 
 			}
 			.rail figure:hover :global(img) { transform: scale(1.05); }
 
-			.sign { margin: 56px 0 0; }
+			.sign { margin: -14px 0 34px; }
 			.sign :global(img) {
-				width: clamp(240px, 30vw, 340px); height: auto; display: block;
+				width: clamp(170px, 20vw, 230px); height: auto; display: block;
 				filter: invert(1);
 				mix-blend-mode: screen;
-				opacity: 0.8;
+				opacity: 0.62;
 			}
 
 			@media (max-width: 900px) {

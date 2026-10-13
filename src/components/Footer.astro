@@ -1,11 +1,11 @@
 ---
 import { Image } from 'astro:assets';
-import logo from '../assets/brand/logo.png';
+import monogram from '../assets/brand/monogram.jpg';
 
 const year = new Date().getFullYear();
 const links = [
 	{ href: '/about', label: 'About' },
-	{ href: '/projects', label: 'Work' },
+	{ href: '/projects', label: 'Projects' },
 	{ href: '/athletics', label: 'Athletics' },
 	{ href: '/gallery', label: 'Gallery' },
 	{ href: '/coach-portal', label: 'Coaching' },
@@ -31,7 +31,7 @@ const links = [
 	<!-- The mark, oversized and sunk below the edge like something on the
 	     pool floor. Decorative only, so it is hidden from assistive tech. -->
 	<div class="watermark" aria-hidden="true">
-		<Image src={logo} alt="" widths={[400, 800]} sizes="460px" loading="lazy" />
+		<Image src={monogram} alt="" widths={[500, 900]} sizes="520px" loading="lazy" />
 	</div>
 </footer>
 
@@ -116,10 +116,14 @@ const links = [
 		z-index: 1;
 		width: 520px;
 		pointer-events: none;
-		/* brightness(0) flattens the whole mark to a silhouette, invert turns
-		   it white — otherwise the landscape fill inverts into dark mountains. */
-		filter: brightness(0) invert(1);
-		opacity: 0.085;
+		/* The plain monogram, not the landscape-filled mark: flattening that
+		   one left the mountain edges inside the letterforms and the lossy
+		   re-encode rang around the cut-out. This is solid black on white, so
+		   invert gives clean white strokes and screen drops the white ground —
+		   no alpha channel involved, so the edges stay uniform. */
+		filter: invert(1);
+		mix-blend-mode: screen;
+		opacity: 0.09;
 	}
 	.watermark :global(img) { width: 100%; height: auto; display: block; }
 
