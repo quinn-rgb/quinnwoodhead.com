@@ -51,15 +51,15 @@ const education = [
 					<article class="card">
 						<div class="frame">
 							<Image src={p.images[0]} alt={p.title} widths={[400, 800, 1200]}
-								sizes="(max-width: 760px) 92vw, 44vw" loading={i < 2 ? 'eager' : 'lazy'} />
+								sizes="(max-width: 700px) 92vw, 30vw" loading={i < 3 ? 'eager' : 'lazy'} />
 							<span class="idx">{String(i + 1).padStart(2, '0')}</span>
 						</div>
 						<h3>{p.title}</h3>
 						<span class="where">{p.kind}</span>
 						{p.images.length > 1 && (
 							<div class="strip">
-								{p.images.slice(1, 5).map((img) => (
-									<Image src={img} alt="" widths={[160, 320]} sizes="56px" loading="lazy" />
+								{p.images.slice(1, 4).map((img) => (
+									<Image src={img} alt="" widths={[160, 320]} sizes="46px" loading="lazy" />
 								))}
 							</div>
 						)}
@@ -91,10 +91,10 @@ const education = [
 		<style>
 			.grid {
 				display: grid;
-				grid-template-columns: repeat(2, minmax(0, 1fr));
-				gap: 46px 36px;
+				grid-template-columns: repeat(3, minmax(0, 1fr));
+				gap: 40px 26px;
 			}
-			.card h3 { margin-top: 15px; font-size: 19px; }
+			.card h3 { margin-top: 13px; font-size: 17px; }
 			.card .where { margin-top: 6px; }
 
 			.frame {
@@ -127,14 +127,17 @@ const education = [
 
 			.strip { display: flex; gap: 6px; margin-top: 13px; }
 			.strip :global(img) {
-				width: 56px; height: 42px; object-fit: cover;
+				width: 46px; height: 35px; object-fit: cover;
 				border-radius: 4px; border: 1px solid var(--line);
 				opacity: 0.5; transition: opacity 260ms ease;
 			}
 			.card:hover .strip :global(img) { opacity: 1; }
 
-			@media (max-width: 760px) {
-				.grid { grid-template-columns: 1fr; gap: 34px; }
+			@media (max-width: 1000px) {
+				.grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 34px 24px; }
+			}
+			@media (max-width: 640px) {
+				.grid { grid-template-columns: 1fr; gap: 30px; }
 			}
 
 			.also { font-size: 15px; color: var(--fg-3); }

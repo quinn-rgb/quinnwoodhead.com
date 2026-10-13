@@ -107,7 +107,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 .row {
 	display: grid;
-	grid-template-columns: 62px 1fr;
+	grid-template-columns: 76px 1fr;
 	gap: 20px;
 	padding: 20px 0;
 	border-bottom: 1px solid var(--line);
@@ -166,5 +166,5 @@ ul.plain li::before {
 
 @media (max-width: 600px) {
 	main { padding: 72px 20px 80px; }
-	.row { grid-template-columns: 52px 1fr; gap: 14px; }
+	.row { grid-template-columns: 64px 1fr; gap: 14px; }
 }

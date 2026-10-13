@@ -14,15 +14,19 @@ const pic = (name: string) =>
 	Object.entries(files).find(([k]) => k.endsWith('/' + name + '.jpg'))?.[1].default;
 
 const hero = pic('panam-2023-anthem');
-const crests = { usa: usawpMark, stanford: stanfordMark, drake: drakeMark };
+const crests: Record<string, ImageMetadata | null> =
+	{ usa: usawpMark, stanford: stanfordMark, drake: drakeMark, pro: null };
 
 const milestones = [
-	{ when: '2024', org: 'usa', what: 'Paris alternate', where: 'Telimar Pallanuoto · Italy · USA',
-	  note: 'Alternate for the Paris Olympics. Pro season with Telimar in Palermo.',
-	  shots: ['pro-telimar', 'pro-1', 'usa-team-photo'] },
-	{ when: '2023', org: 'usa', what: 'Pro debut · Pan-Am gold', where: 'ANO Glyfada · Greece',
-	  note: 'First pro season, outside Athens. Gold at the Pan-American Games in Santiago, bronze at the World Cup.',
-	  shots: ['usa-v-china-2023', 'team-usa-flag', 'pro-2', 'pro-3'] },
+	{ when: '2023–25', org: 'pro', what: 'Pro water polo', where: 'Glyfada · Telimar · Roma Vis Nova',
+	  note: 'Three seasons in Europe — ANO Glyfada outside Athens from January 2023, then Telimar in Palermo and Roma Vis Nova.',
+	  shots: ['pro-telimar', 'pro-1', 'pro-2', 'pro-3', 'pro-4', 'pro-team'] },
+	{ when: '2024', org: 'usa', what: 'Paris alternate', where: 'USA National Team',
+	  note: 'Alternate for the Paris Olympics.',
+	  shots: ['usa-team-photo'] },
+	{ when: '2023', org: 'usa', what: 'National team debut', where: 'USA National Team',
+	  note: 'First senior caps for the USA. Gold at the Pan-American Games in Santiago, bronze at the World Cup.',
+	  shots: ['usa-v-china-2023', 'team-usa-flag'] },
 	{ when: '2019', org: 'stanford', what: 'NCAA National Champions', where: 'Stanford',
 	  note: 'Stanford takes the title. ACWPC All-American as a sophomore.',
 	  shots: ['ncaa-2019-trophy', 'ncaa-celebration', 'trophy-kiss', 'stanford-match-1'] },
@@ -60,7 +64,7 @@ const milestones = [
 		<main>
 			<h1>Athletics</h1>
 			<p class="lead">
-				Water polo since 2013 — Drake, Stanford, two pro seasons in Europe, and the
+				Water polo since 2013 — Drake, Stanford, three pro seasons in Europe, and the
 				USA National Team.
 			</p>
 
@@ -70,7 +74,9 @@ const milestones = [
 						<div class="when">{m.when}</div>
 						<div class="what">
 							<h3>
-								<span class="crest"><Image src={crests[m.org]} alt="" widths={[80, 160]} sizes="28px" loading="lazy" /></span>
+								{crests[m.org] && (
+									<span class="crest"><Image src={crests[m.org]!} alt="" widths={[80, 160]} sizes="28px" loading="lazy" /></span>
+								)}
 								{m.what}
 							</h3>
 							<p>{m.note}</p>
