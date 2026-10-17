@@ -5,40 +5,68 @@ import logo from '../assets/brand/logo.png';
 const here = Astro.url.pathname;
 const on = (href: string) => here === href || here === href + '/';
 
-// Each tab carries the hue of the page it opens, so the bar reads as a
-// palette and you can tell where you are from colour alone.
+// Same order as the ring on the hub, so moving between the two feels
+// like the same set of objects rather than two different menus.
 const links = [
-	{ href: '/about',     label: 'About',     num: '01', hue: '109, 163, 255' },
-	{ href: '/projects',  label: 'Projects',  num: '02', hue: '240, 168, 104' },
-	{ href: '/athletics', label: 'Athletics', num: '03', hue: '70, 207, 184' },
-	{ href: '/gallery',   label: 'Gallery',   num: '04', hue: '239, 127, 145' },
+	{ href: '/about',        label: 'About',     key: '1', hue: '109, 163, 255' },
+	{ href: '/projects',     label: 'Projects',  key: '2', hue: '240, 168, 104' },
+	{ href: '/athletics',    label: 'Athletics', key: '3', hue: '70, 207, 184' },
+	{ href: '/gallery',      label: 'Gallery',   key: '4', hue: '239, 127, 145' },
 ];
+const coaching = { href: '/coach-portal', label: 'Coaching', key: '5' };
 ---
 
 <nav>
 	<div class="bar">
-		<a class="mark" href="/home" aria-label="Quinn Woodhead — home">
+		<a class="mark" href="/home" aria-label="Back to the water" data-hint="Back to the water">
 			<Image src={logo} alt="" widths={[64, 128]} sizes="32px" loading="eager" />
 		</a>
 
 		<ul>
 			{links.map((l) => (
 				<li>
-					<a href={l.href} class={on(l.href) ? 'on' : ''} style={`--tab: ${l.hue}`}>
-						<span class="num">{l.num}</span>
+					<a
+						href={l.href}
+						class={on(l.href) ? 'on' : ''}
+						style={`--tab: ${l.hue}`}
+						data-key={l.key}
+					>
+						<span class="buoy" aria-hidden="true"></span>
 						<span class="label">{l.label}</span>
 						<span class="rule"></span>
+						<span class="kbd" aria-hidden="true">{l.key}</span>
 					</a>
 				</li>
 			))}
 		</ul>
 
 		<a
-			class={'coaching' + (on('/coach-portal') ? ' on' : '')}
-			href="/coach-portal"
-		>Coaching</a>
+			class={'coaching' + (on(coaching.href) ? ' on' : '')}
+			href={coaching.href}
+			data-key={coaching.key}
+		>
+			<span class="buoy" aria-hidden="true"></span>
+			<span class="label">{coaching.label}</span>
+		</a>
 	</div>
 </nav>
+
+<script is:inline>
+	// 1–5 jump between pages, 0 / Escape returns to the water.
+	(function () {
+		var map = {};
+		document.querySelectorAll('nav a[data-key]').forEach(function (a) {
+			map[a.dataset.key] = a.getAttribute('href');
+		});
+		document.addEventListener('keydown', function (e) {
+			if (e.metaKey || e.ctrlKey || e.altKey) return;
+			var t = e.target;
+			if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+			if (map[e.key]) { e.preventDefault(); window.location.href = map[e.key]; return; }
+			if (e.key === '0' || e.key === 'Escape') { e.preventDefault(); window.location.href = '/home'; }
+		});
+	})();
+</script>
 
 <style>
 	nav {
@@ -60,23 +88,38 @@ const links = [
 	}
 
 	.mark {
+		position: relative;
 		display: flex;
 		align-items: center;
+		justify-content: center;
 		flex: none;
-		opacity: 0.95;
-		transition: opacity 220ms ease, transform 420ms cubic-bezier(.2,.7,.2,1);
-	}
-	.mark:hover { opacity: 1; transform: rotate(-4deg) scale(1.06); }
-	/* The mark is a black monogram with a landscape fill — it vanishes on a
-	   dark bar, so it sits on a light tile, the same treatment as the crests. */
-	.mark {
 		width: 38px; height: 38px;
 		border-radius: 9px;
 		background: #f2f5fa;
 		border: 1px solid rgba(255, 255, 255, 0.14);
-		justify-content: center;
+		transition: transform 420ms cubic-bezier(.2,.7,.2,1), box-shadow 300ms ease;
+	}
+	.mark:hover {
+		transform: rotate(-4deg) scale(1.06);
+		box-shadow: 0 0 22px rgba(109, 163, 255, 0.45);
 	}
 	.mark :global(img) { width: 27px; height: 27px; object-fit: contain; display: block; }
+	/* says where the mark goes, without a permanent label */
+	.mark::after {
+		content: attr(data-hint);
+		position: absolute;
+		left: 0; top: calc(100% + 8px);
+		font-family: var(--mono);
+		font-size: 9px;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--fg-3);
+		white-space: nowrap;
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 220ms ease;
+	}
+	.mark:hover::after { opacity: 1; }
 
 	ul {
 		display: flex;
@@ -90,25 +133,42 @@ const links = [
 	ul a {
 		position: relative;
 		display: flex;
-		align-items: baseline;
-		gap: 7px;
-		padding: 7px 13px 9px;
-		border-radius: 8px;
+		align-items: center;
+		gap: 9px;
+		padding: 7px 14px 9px;
+		border-radius: 9px;
 		text-decoration: none;
 		transition: background 240ms ease;
 	}
 	ul a:hover { background: rgba(var(--tab), 0.09); text-decoration: none; }
 	ul a.on    { background: rgba(var(--tab), 0.13); }
 
-	.num {
-		font-family: var(--mono);
-		font-size: 9px;
-		letter-spacing: 0.08em;
-		color: rgba(var(--tab), 0.95);
-		transition: opacity 240ms ease;
-		opacity: 0.55;
+	/* the same object as on the hub, shrunk to a marker */
+	.buoy {
+		flex: none;
+		width: 13px; height: 13px;
+		border-radius: 50%;
+		background:
+			radial-gradient(circle at 33% 26%, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.3) 18%, transparent 46%),
+			linear-gradient(to bottom,
+				#f4f7fb 0%, #e6edf6 40%,
+				#6da3ff 40%, #4b86ea 58%,
+				#cfdcec 58%, #93a8c2 100%);
+		box-shadow: 0 1px 3px rgba(7, 11, 22, 0.7);
+		opacity: 0.4;
+		transition: opacity 240ms ease, transform 420ms cubic-bezier(.2,.7,.2,1);
 	}
-	ul a:hover .num, ul a.on .num { opacity: 1; }
+	ul a:hover .buoy { opacity: 0.85; transform: translateY(-2px); }
+	ul a.on .buoy {
+		opacity: 1;
+		transform: translateY(-2px);
+		box-shadow: 0 2px 6px rgba(7, 11, 22, 0.7), 0 0 12px rgba(109, 163, 255, 0.65);
+		animation: navbob 4.5s ease-in-out infinite;
+	}
+	@keyframes navbob {
+		0%, 100% { translate: 0 -1px; }
+		50%      { translate: 0 1px; }
+	}
 
 	.label {
 		font-family: var(--mono);
@@ -121,11 +181,23 @@ const links = [
 	ul a:hover .label { color: var(--fg-2); }
 	ul a.on .label { color: var(--fg); }
 
-	/* the hue swipes in under the tab */
+	/* the shortcut, shown only while you're reaching for it */
+	.kbd {
+		font-family: var(--mono);
+		font-size: 8.5px;
+		line-height: 1;
+		color: var(--fg-3);
+		border: 1px solid var(--line);
+		border-radius: 4px;
+		padding: 2px 4px;
+		opacity: 0;
+		transition: opacity 220ms ease;
+	}
+	ul a:hover .kbd { opacity: 0.8; }
+
 	.rule {
 		position: absolute;
-		left: 13px;
-		right: 13px;
+		left: 14px; right: 14px;
 		bottom: 3px;
 		height: 2px;
 		border-radius: 2px;
@@ -140,38 +212,43 @@ const links = [
 		box-shadow: 0 0 12px rgba(var(--tab), 0.65);
 	}
 
-	/* Pushed to the far right and styled apart from the numbered tabs —
-	   reachable, but plainly not one of them. */
+	/* kept apart from the four, as a different kind of destination */
 	.coaching {
 		margin-left: auto;
 		flex: none;
-		font-family: var(--mono);
-		font-size: 10.5px;
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
-		color: var(--fg-3);
-		text-decoration: none;
-		padding: 7px 14px;
+		display: flex;
+		align-items: center;
+		gap: 9px;
+		padding: 7px 15px;
 		border: 1px solid var(--line);
 		border-radius: 20px;
-		transition: color 220ms ease, border-color 220ms ease, background 220ms ease;
+		text-decoration: none;
+		transition: border-color 220ms ease, background 220ms ease;
 	}
 	.coaching:hover, .coaching.on {
-		color: #d9bcff;
 		border-color: rgba(192, 140, 240, 0.55);
 		background: rgba(192, 140, 240, 0.12);
 		text-decoration: none;
 	}
+	.coaching:hover .buoy, .coaching.on .buoy { opacity: 1; transform: translateY(-2px); }
+	.coaching:hover .label, .coaching.on .label { color: #d9bcff; }
 
-	@media (max-width: 760px) {
-		.bar { padding: 14px 20px 16px; gap: 18px; }
+	@media (max-width: 860px) {
+		.bar { padding: 14px 20px 16px; gap: 16px; }
 		ul { gap: 2px; }
-		ul a { padding: 6px 9px 8px; gap: 5px; }
+		ul a { padding: 6px 9px 8px; gap: 6px; }
 		.label { font-size: 10px; letter-spacing: 0.06em; }
-		.coaching { padding: 5px 10px; font-size: 9.5px; letter-spacing: 0.08em; }
+		.kbd { display: none; }
+		.coaching { padding: 6px 11px; gap: 7px; }
 		.rule { left: 9px; right: 9px; }
 	}
-	@media (max-width: 460px) {
-		.num { display: none; }
+	@media (max-width: 560px) {
+		ul .label { display: none; }
+		.coaching .label { font-size: 9px; }
+		ul a { padding: 8px 10px; }
+		.buoy { width: 15px; height: 15px; }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		ul a.on .buoy { animation: none; }
 	}
 </style>

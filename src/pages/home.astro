@@ -7,10 +7,10 @@ import signature from '../assets/brand/signature-ink.png';
 // Ring positions are percentages of the viewport. The buoys can be dragged
 // anywhere from here; these are only where they start.
 const buoys = [
-	{ href: '/projects',     label: 'Projects',  hue: '240, 168, 104', x: 50, y: 15 },
-	{ href: '/athletics',    label: 'Athletics', hue: '70, 207, 184',  x: 81, y: 50 },
-	{ href: '/gallery',      label: 'Gallery',   hue: '239, 127, 145', x: 50, y: 85 },
-	{ href: '/coach-portal', label: 'Coaching',  hue: '192, 140, 240', x: 19, y: 50 },
+	{ href: '/projects',     label: 'Projects',  x: 50, y: 15 },
+	{ href: '/athletics',    label: 'Athletics', x: 81, y: 50 },
+	{ href: '/gallery',      label: 'Gallery',   x: 50, y: 85 },
+	{ href: '/coach-portal', label: 'Coaching',  x: 19, y: 50 },
 ];
 ---
 
@@ -23,18 +23,15 @@ const buoys = [
 		<canvas id="water" aria-hidden="true"></canvas>
 
 		<main class="stage" id="stage">
+			<div class="field" id="field">
 			<section class="centre">
 				<figure class="face">
 					<Image src={portrait} alt="Quinn Woodhead" widths={[300, 600]} sizes="150px" loading="eager" />
 				</figure>
-				<h1>Quinn Woodhead</h1>
 				<figure class="sign">
-					<Image src={signature} alt="" widths={[320, 640]} sizes="190px" loading="eager" />
+					<Image src={signature} alt="Quinn Woodhead" widths={[400, 800]} sizes="300px" loading="eager" />
 				</figure>
-				<p>
-					Product designer at Anthropic.<br />
-					Water polo on the USA National Team. San Francisco.
-				</p>
+				<p>GTM @ Anthropic in San Francisco</p>
 				<a class="more" href="/about">Full bio &rarr;</a>
 			</section>
 
@@ -43,7 +40,7 @@ const buoys = [
 					class="buoy"
 					href={b.href}
 					data-slug={b.href}
-					style={`--x: ${b.x}; --y: ${b.y}; --hue: ${b.hue}`}
+					style={`--x: ${b.x}; --y: ${b.y}`}
 				>
 					<span class="float">
 						<span class="ball"></span>
@@ -52,6 +49,7 @@ const buoys = [
 					<span class="tag">{b.label}</span>
 				</a>
 			))}
+			</div>
 		</main>
 
 		<button class="reset" id="reset" hidden>Reset buoys</button>
@@ -76,15 +74,22 @@ const buoys = [
 				background: radial-gradient(130% 100% at 50% 100%, #1f3a6d 0%, #14213d 42%, #070b16 78%);
 			}
 
+			.field {
+				position: absolute; inset: 0;
+				will-change: transform;
+			}
 			.stage {
 				position: fixed; inset: 0;
 				z-index: 1;
+				cursor: grab;
 				max-width: none;
 				padding: 0;
 				transform-origin: var(--ox, 50%) var(--oy, 50%);
 				transition: transform 760ms cubic-bezier(.5, 0, .75, 0), opacity 760ms ease;
 			}
 			body.diving .stage { transform: scale(3.4); opacity: 0; }
+			body.panning .stage { cursor: grabbing; }
+			body.panning .float { animation-play-state: paused; }
 
 			/* ── centre ───────────────────────────────────────────── */
 			.centre {
@@ -112,16 +117,19 @@ const buoys = [
 			}
 			.centre h1::after { display: none; }
 
-			.sign { margin: 6px auto 14px; width: 190px; }
+			.sign { margin: 4px auto 18px; width: min(300px, 70vw); }
 			/* The stage is a fixed, z-indexed stacking context, so mix-blend-mode
 			   has nothing to blend against here. This asset carries real alpha. */
 			.sign :global(img) {
 				width: 100%; height: auto; display: block;
-				opacity: 0.66;
+				opacity: 0.92;
 			}
 
 			.centre p {
-				font-size: 14px;
+				font-family: var(--mono);
+				font-size: 11px;
+				letter-spacing: 0.1em;
+				text-transform: uppercase;
 				line-height: 1.6;
 				color: var(--fg-2);
 				margin: 0 0 16px;
@@ -163,24 +171,33 @@ const buoys = [
 				position: relative;
 				width: 72px; height: 72px;
 				display: block;
-				animation: bob var(--bob, 5s) ease-in-out infinite;
-				animation-delay: var(--delay, 0s);
-				transition: transform 300ms cubic-bezier(.2,.7,.2,1);
+				animation:
+					bob  var(--bob, 5s)  ease-in-out infinite,
+					sway var(--sway, 9s) ease-in-out infinite;
+				animation-delay: var(--delay, 0s), var(--delay, 0s);
+				transition: filter 300ms ease;
 			}
-			.buoy:hover .float { transform: scale(1.09); }
+			.buoy:hover .float { filter: brightness(1.12); }
+			.buoy:hover .ball { box-shadow:
+				0 14px 34px rgba(7, 11, 22, 0.7),
+				inset 0 -9px 18px rgba(10, 20, 40, 0.42),
+				inset 0 6px 10px rgba(255, 255, 255, 0.6),
+				0 0 26px rgba(109, 163, 255, 0.5); }
 
+			/* every buoy identical — the label is the only difference */
 			.ball {
 				position: absolute; inset: 0;
 				border-radius: 50%;
 				background:
-					radial-gradient(circle at 34% 28%, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.28) 18%, transparent 42%),
+					radial-gradient(circle at 33% 26%, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.3) 16%, transparent 44%),
 					linear-gradient(to bottom,
-						rgb(var(--hue)) 0%, rgb(var(--hue)) 44%,
-						rgba(255,255,255,0.92) 44%, rgba(255,255,255,0.92) 56%,
-						rgb(var(--hue)) 56%, rgba(var(--hue), 0.72) 100%);
+						#f4f7fb 0%, #e6edf6 40%,
+						#6da3ff 40%, #4b86ea 58%,
+						#cfdcec 58%, #93a8c2 100%);
 				box-shadow:
-					0 8px 26px rgba(7, 11, 22, 0.62),
-					inset 0 -8px 16px rgba(0, 0, 0, 0.3);
+					0 10px 28px rgba(7, 11, 22, 0.66),
+					inset 0 -9px 18px rgba(10, 20, 40, 0.42),
+					inset 0 6px 10px rgba(255, 255, 255, 0.5);
 			}
 			.glow {
 				position: absolute;
@@ -188,7 +205,7 @@ const buoys = [
 				transform: translateX(-50%);
 				width: 86px; height: 22px;
 				border-radius: 50%;
-				background: radial-gradient(ellipse, rgba(var(--hue), 0.5) 0%, transparent 70%);
+				background: radial-gradient(ellipse, rgba(109, 163, 255, 0.46) 0%, transparent 70%);
 				filter: blur(5px);
 				transition: opacity 300ms ease;
 				opacity: 0.75;
@@ -211,8 +228,13 @@ const buoys = [
 			.buoy.chosen .tag { opacity: 0; transition: opacity 260ms ease; }
 
 			@keyframes bob {
-				0%, 100% { transform: translateY(-5px); }
-				50%      { transform: translateY(5px); }
+				0%, 100% { translate: 0 -5px; }
+				50%      { translate: 0 5px; }
+			}
+			/* a slow list, so they never look pinned to the water */
+			@keyframes sway {
+				0%, 100% { rotate: -5deg; }
+				50%      { rotate: 5deg; }
 			}
 
 			.reset {
@@ -281,6 +303,7 @@ const buoys = [
 				// give each buoy its own rhythm so they don't pulse together
 				buoys.forEach(function (b, i) {
 					b.style.setProperty('--bob', (4.4 + i * 0.7) + 's');
+					b.style.setProperty('--sway', (8.5 + i * 1.3) + 's');
 					b.style.setProperty('--delay', (i * 0.9) + 's');
 				});
 
@@ -339,6 +362,7 @@ const buoys = [
 						'uniform float u_time;',
 						'uniform vec2  u_res;',
 						'uniform vec2  u_mouse;',
+					'uniform vec2  u_pan;',
 						'uniform vec4  u_ripples[6];',
 						'uniform float u_dive;',
 						'uniform float u_chop;',
@@ -389,6 +413,7 @@ const buoys = [
 						'  // descent — the surface draws away as you sink through it',
 						'  p = (p - vec2(aspect * 0.5, 0.5)) * mix(1.0, 0.84, u_dive)',
 						'      + vec2(aspect * 0.5, 0.5);',
+					'  p += u_pan;   // the surface slides with the scene',
 						'  float t = u_time * 0.10;',
 						'',
 						'  vec2 q;',
@@ -468,6 +493,7 @@ const buoys = [
 				var U = {}, ripples = [];
 				var mouse = { x: 0.5, y: 0.5, lx: 0.5, ly: 0.5 };
 				var dive = 0, diveTarget = 0, chop = 0;
+				var pan = { x: 0, y: 0 };
 				var start = performance.now();
 				var running = false, idleAt = performance.now();
 
@@ -495,6 +521,7 @@ const buoys = [
 					gl.uniform2f(U.u_mouse, mouse.lx, mouse.ly);
 					gl.uniform1f(U.u_dive, dive);
 					gl.uniform1f(U.u_chop, chop);
+					gl.uniform2f(U.u_pan, pan.x / window.innerWidth, -pan.y / window.innerHeight);
 					for (var i = 0; i < 6; i++) {
 						var rp = ripples[i];
 						if (rp) gl.uniform4f(U.u_ripples[i], rp.x, rp.y, rp.t, rp.amp);
@@ -545,7 +572,7 @@ const buoys = [
 					var loc = gl.getAttribLocation(prog, 'a_pos');
 					gl.enableVertexAttribArray(loc);
 					gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-					['u_time','u_res','u_mouse','u_dive','u_chop'].forEach(function (n) {
+					['u_time','u_res','u_mouse','u_dive','u_chop','u_pan'].forEach(function (n) {
 						U[n] = gl.getUniformLocation(prog, n);
 					});
 					U.u_ripples = [];
@@ -568,6 +595,40 @@ const buoys = [
 				window.addEventListener('scroll', wake, { passive: true });
 				window.addEventListener('touchstart', wake, { passive: true });
 
+				// ── drag the water itself: the whole scene moves ─────
+				var field = document.getElementById('field');
+				var PAN_LIMIT = 0.18;            // fraction of the viewport
+
+				(function () {
+					var active = false, sx = 0, sy = 0, ox = 0, oy = 0;
+					stage.addEventListener('pointerdown', function (e) {
+						if (phone()) return;
+						if (e.target.closest('.buoy') || e.target.closest('a') || e.target.closest('button')) return;
+						active = true;
+						sx = e.clientX; sy = e.clientY; ox = pan.x; oy = pan.y;
+						stage.setPointerCapture(e.pointerId);
+						document.body.classList.add('panning');
+						wake();
+					});
+					stage.addEventListener('pointermove', function (e) {
+						if (!active) return;
+						var lx = window.innerWidth * PAN_LIMIT;
+						var ly = window.innerHeight * PAN_LIMIT;
+						pan.x = Math.max(-lx, Math.min(lx, ox + (e.clientX - sx)));
+						pan.y = Math.max(-ly, Math.min(ly, oy + (e.clientY - sy)));
+						if (field) field.style.transform = 'translate3d(' + pan.x + 'px,' + pan.y + 'px,0)';
+						wake();
+					});
+					function stop(e) {
+						if (!active) return;
+						active = false;
+						try { stage.releasePointerCapture(e.pointerId); } catch (_) {}
+						document.body.classList.remove('panning');
+					}
+					stage.addEventListener('pointerup', stop);
+					stage.addEventListener('pointercancel', stop);
+				})();
+
 				// ── drag, and the click hiding inside it ──────────────
 				var DRAG_SLOP = 6;   // px before a press becomes a drag
 
@@ -576,6 +637,7 @@ const buoys = [
 
 					b.addEventListener('pointerdown', function (e) {
 						if (phone()) return;              // column layout: tap only
+						e.stopPropagation();
 						active = true; moved = false;
 						sx = e.clientX; sy = e.clientY;
 						b.setPointerCapture(e.pointerId);
@@ -588,8 +650,8 @@ const buoys = [
 						if (!moved && Math.hypot(dx, dy) < DRAG_SLOP) return;
 						if (!moved) { moved = true; b.classList.add('dragging'); }
 						e.preventDefault();
-						var x = Math.max(6, Math.min(94, (e.clientX / window.innerWidth) * 100));
-						var y = Math.max(8, Math.min(92, (e.clientY / window.innerHeight) * 100));
+						var x = Math.max(4, Math.min(96, ((e.clientX - pan.x) / window.innerWidth) * 100));
+						var y = Math.max(6, Math.min(94, ((e.clientY - pan.y) / window.innerHeight) * 100));
 						b.style.setProperty('--x', x);
 						b.style.setProperty('--y', y);
 						chop = Math.min(1, chop + 0.05);

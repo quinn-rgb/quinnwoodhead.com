@@ -46,6 +46,26 @@ body {
 	-webkit-font-smoothing: antialiased;
 }
 
+/* Content settles in on arrival, so moving between pages reads as a
+   transition rather than a cut. The hub runs its own motion. */
+body:not([data-page='hub']) main,
+body:not([data-page='hub']) .hero,
+body:not([data-page='hub']) .band {
+	animation: arrive 520ms cubic-bezier(.2, .7, .2, 1) both;
+}
+body:not([data-page='hub']) main { animation-delay: 60ms; }
+
+@keyframes arrive {
+	from { opacity: 0; transform: translateY(12px); }
+	to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	body:not([data-page='hub']) main,
+	body:not([data-page='hub']) .hero,
+	body:not([data-page='hub']) .band { animation: none; }
+}
+
 main {
 	max-width: var(--measure);
 	margin: 0 auto;
